@@ -1,0 +1,89 @@
+/* src/components/Navbar/Navbar.css */
+
+:root {
+  --navbar-bg: #f7f7f7;
+  --navbar-border: #ddd;
+  --navbar-pad-v: 1rem;
+  --navbar-pad-h: 2rem;
+
+  --logo-min: 80px;
+  --logo-max: 150px;
+  --logo-vw: 10vw;
+  --logo-hover-scale: 1.05;
+
+  --title-color: #333;
+  --title-size: 1rem;
+
+  --admin-color: #007BFF;
+  --admin-hover-bg: var(--admin-color);
+  --admin-hover-color: #fff;
+  --admin-pad-v: 0.5rem;
+  --admin-pad-h: 1rem;
+  --admin-radius: 4px;
+
+  --trans-speed: 0.2s;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: var(--navbar-pad-v) var(--navbar-pad-h);
+  background: var(--navbar-bg);
+  border-bottom: 1px solid var(--navbar-border);
+}
+
+/* Logo */
+.navbar__logo {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.navbar__logo-image {
+  width: clamp(var(--logo-min), var(--logo-vw), var(--logo-max));
+  height: auto;
+  transition: transform var(--trans-speed) ease;
+  border-radius: 8px;
+}
+.navbar__logo:hover .navbar__logo-image {
+  transform: scale(var(--logo-hover-scale));
+}
+
+/* Center title */
+.navbar__title {
+  flex: 1;
+  text-align: center;
+  color: var(--title-color);
+  font-size: var(--title-size);
+  font-weight: 500;
+  padding: 0 1rem;
+}
+
+/* Admin button */
+.navbar__menu {
+  flex-shrink: 0;
+}
+.navbar__admin-button {
+  text-decoration: none;
+  color: var(--admin-color);
+  border: 1px solid var(--admin-color);
+  padding: var(--admin-pad-v) var(--admin-pad-h);
+  border-radius: var(--admin-radius);
+  transition:
+    background-color var(--trans-speed) ease,
+    color var(--trans-speed) ease;
+}
+.navbar__admin-button:hover {
+  background: var(--admin-hover-bg);
+  color: var(--admin-hover-color);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .navbar {
+    padding:
+      calc(var(--navbar-pad-v) * 0.75)
+      calc(var(--navbar-pad-h) * 0.75);
+  }
+  .navbar__title {
+    display: none; /* hide on small screens if desired */
+  }
+}
