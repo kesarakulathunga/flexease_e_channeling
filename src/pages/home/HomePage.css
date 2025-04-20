@@ -1,17 +1,159 @@
-/* Keep your 2‑inch margins if you like */
+/* 2" side margins on all pages */
 .page-container {
   margin-left: 2in;
   margin-right: 2in;
-  min-height: 100vh;
-  background: #f9f9f9; /* light background so you see the page */
 }
 
-/* Centered placeholder text */
-.home-placeholder {
-  display: flex;
+/* Hero: two‑column layout */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: center;
-  height: calc(100vh - 80px); /* leave room for your navbar height (~80px) */
-  font-size: 1.25rem;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Text column */
+.hero-text h1 {
+  font-size: 2.5rem;
+  line-height: 1.3; /* Slightly adjusted line-height for heading */
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.hero-text p {
   color: #666;
+  font-size: 1rem;
+  line-height: 1.6; /* Increased line-height for paragraph readability */
+  margin-bottom: 2.5rem; /* Increased space before buttons */
+}
+
+/* Apply animation to the longer description */
+.animated-description {
+  white-space: pre-wrap; /* Keep this to respect newlines in the text */
+  margin-top: 1rem; /* Add some space above the animated text */
+  margin-bottom: 1.5rem; /* Reduce space below the animated text */
+  line-height: 1.6; /* Ensure consistent line height */
+  min-height: 10em; /* Reserve space to avoid layout shifts, adjust as needed */
+}
+
+/* Adjust spacing within the hero text container */
+.hero-text > p {
+  margin-bottom: 1rem; /* Standard space below static paragraphs */
+}
+
+.hero-text > .animated-description {
+  margin-bottom: 2rem; /* Slightly more space below animated text before buttons */
+}
+
+/* Buttons side-by-side by default */
+.button-group {
+  display: flex;
+  flex-direction: row; /* Arrange buttons in a row */
+  gap: 1rem; /* Space between buttons */
+}
+
+/* Button base styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1; /* Make buttons share space equally */
+  text-align: center; /* Center text within button */
+  max-width: 250px; /* Optional: Limit max button width */
+}
+
+/* Primary button look */
+.btn-primary {
+  background-color: #1e90ff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #1c86ee;
+}
+
+/* Illustration column */
+.hero-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Responsive: stack columns on narrower screens */
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-text h1 {
+    font-size: 2rem;
+  }
+  .button-group {
+    justify-content: center; /* Buttons remain in a row but are centered */
+  }
+  .button-group .btn {
+    flex: 0 1 200px; /* Allow shrinking, base width 200px, don't grow infinitely */
+    max-width: 250px; /* Consistent max width */
+  }
+}
+
+/* Responsive: Further adjustments for smaller mobile screens */
+@media (max-width: 768px) {
+  .page-container {
+    margin-left: 1in; /* Reduce side margins */
+    margin-right: 1in;
+  }
+
+  .hero-text h1 {
+    font-size: 1.8rem; /* Smaller heading */
+  }
+
+  .hero-text p {
+    font-size: 0.9rem; /* Smaller paragraph text */
+  }
+
+  .button-group {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center stacked buttons */
+  }
+
+  .button-group .btn {
+    flex: none; /* Reset flex behavior for column layout */
+    width: 80%; /* Make buttons wide for tapping */
+    max-width: 350px; /* Adjust max width for stacked layout */
+  }
+
+  .hero {
+    gap: 1.5rem; /* Reduce gap between text and image */
+    margin-top: 1rem;
+  }
+
+  .animated-description {
+    margin-bottom: 1.5rem; /* Adjust space below animated text on mobile */
+    min-height: 12em; /* May need more height on mobile */
+  }
+
+  .hero-text > .animated-description {
+    margin-bottom: 1.5rem; /* Adjust space below animated text before buttons */
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    margin-left: 0.5in; /* Even smaller margins */
+    margin-right: 0.5in;
+  }
+
+  .hero-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem; /* Slightly smaller buttons */
+    font-size: 0.9rem;
+  }
 }
