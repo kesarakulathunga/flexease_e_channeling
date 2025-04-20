@@ -1,44 +1,44 @@
-// src/components/Navbar/Navbar.jsx
-import React from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import logoSrc from '../../assets/logo.png'; // your logo path
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleLogoClick = () => {
-    if (location.pathname === '/') {
-      window.location.reload();
-    } else {
-      navigate('/');
-    }
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <header className="navbar">
-      {/* Logo on the left */}
-      <div className="navbar__logo" onClick={handleLogoClick}>
-        <img
-          src={logoSrc}
-          alt="Flexease Physio Logo"
-          className="navbar__logo-image"
-        />
-      </div>
-
-      {/* Centered welcome text */}
-      <div className="navbar__title">
-        Welcome to Flexease Physio Channeling Center
-      </div>
-
-      {/* Admin Login button on the right */}
-      <nav className="navbar__menu">
-        <Link to="/admin" className="navbar__admin-button">
-          Admin Login
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo">
+          <img src="/src/src_files/Flexeaselogo.png" alt="FlexEase Logo" className="logo-image" />
+          <span className="logo-text">FLEXEASE PHYSIOTHERAPY CENTER</span>
         </Link>
-      </nav>
-    </header>
+
+        <div className="menu-icon" onClick={toggleMenu}>
+          <i className={isMenuOpen ? 'fas fa-times' : 'fas fa-bars'} />
+        </div>
+
+        <ul className={isMenuOpen ? 'nav-menu active' : 'nav-menu'}>
+          <li className="nav-item">
+            <Link to="/" className="nav-link">Home</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/services" className="nav-link">Services</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/about" className="nav-link">About</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/contact" className="nav-link">Contact</Link>
+          </li>
+        </ul>
+
+        <button className="admin-login-btn">Admin Login</button>
+      </div>
+    </nav>
   );
 };
 
