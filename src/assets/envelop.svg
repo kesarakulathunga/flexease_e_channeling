@@ -1,0 +1,5 @@
+<!-- src/assets/icons/email.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <rect width="20" height="14" x="2" y="5" rx="2" ry="2" stroke="#666" stroke-width="2" fill="#fff"></rect>
+  <path d="M2 5l10 7 10-7" stroke="#666" stroke-width="2" fill="none"></path>
+</svg>

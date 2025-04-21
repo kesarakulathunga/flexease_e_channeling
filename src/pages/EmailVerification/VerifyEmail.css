@@ -1,0 +1,152 @@
+/* Full-screen backdrop to focus the card */
+
+.verify-page {
+  /* Use relative path for Vite to process */
+  background-image: url('../../assets/verify-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem; /* Add padding around the page */
+}
+
+.verify-page::before { /* overlay */ }
+
+.verify-card { /* card positioning */ }
+  
+/* Central card */
+.verify-card {
+  background-color: #fff;
+  padding: 2.5rem; /* Increased padding */
+  border-radius: 12px; /* Slightly larger radius */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  width: 100%;
+  max-width: 480px; /* Increased max-width */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Increased gap between elements */
+}
+
+/* Progress bar */
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.step {
+  font-size: 0.875rem;
+  color: #999;
+  padding: 0 0.25rem;
+}
+.step.active {
+  font-weight: bold;
+  color: #333;
+}
+.divider {
+  width: 2rem;
+  height: 1px;
+  background: #ccc;
+  margin: 0 0.5rem;
+}
+
+/* Titles */
+.verify-card h2 {
+  margin-bottom: 0.5rem; /* Adjust spacing */
+  font-size: 1.8rem; /* Slightly larger heading */
+  color: #333;
+}
+.verify-card p {
+  margin-bottom: 1.5rem; /* Adjust spacing */
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Input with icon */
+.input-group {
+  position: relative;
+  margin-bottom: 1rem; /* Ensure consistent bottom margin */
+}
+.input-group .icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  opacity: 0.6;
+}
+.input-group input {
+  width: 100%;
+  padding: 12px 15px 12px 45px; /* Adjust padding if needed */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Error message */
+.error {
+  color: #d00;
+  font-size: 0.85rem;
+  margin-top: -0.5rem; /* Adjust position relative to input */
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Buttons */
+.btn-primary {
+  width: 100%; /* Make primary button full width */
+  padding: 12px 20px;
+  font-size: 1rem;
+  background: #1e90ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.5rem; /* Space below primary button */
+  transition: background 0.2s;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #1c86ee;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #1e90ff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 8px; /* Add some padding for easier clicking */
+}
+.btn-link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Styles for the OTP section actions */
+.verify-actions {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center; /* Center buttons */
+  gap: 0.75rem; /* Space between the buttons */
+  margin-top: 1rem; /* Space above the actions */
+  width: 100%; /* Take full width */
+}
+
+/* Optional: Add a subtle divider line above the actions */
+.verify-actions::before {
+  content: '';
+  display: block;
+  width: 80%;
+  height: 1px;
+  background-color: #eee;
+  margin-bottom: 1rem;
+}

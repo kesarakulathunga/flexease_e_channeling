@@ -28,24 +28,6 @@
   margin-bottom: 2.5rem; /* Increased space before buttons */
 }
 
-/* Apply animation to the longer description */
-.animated-description {
-  white-space: pre-wrap; /* Keep this to respect newlines in the text */
-  margin-top: 1rem; /* Add some space above the animated text */
-  margin-bottom: 1.5rem; /* Reduce space below the animated text */
-  line-height: 1.6; /* Ensure consistent line height */
-  min-height: 10em; /* Reserve space to avoid layout shifts, adjust as needed */
-}
-
-/* Adjust spacing within the hero text container */
-.hero-text > p {
-  margin-bottom: 1rem; /* Standard space below static paragraphs */
-}
-
-.hero-text > .animated-description {
-  margin-bottom: 2rem; /* Slightly more space below animated text before buttons */
-}
-
 /* Buttons side-by-side by default */
 .button-group {
   display: flex;
@@ -130,15 +112,6 @@
   .hero {
     gap: 1.5rem; /* Reduce gap between text and image */
     margin-top: 1rem;
-  }
-
-  .animated-description {
-    margin-bottom: 1.5rem; /* Adjust space below animated text on mobile */
-    min-height: 12em; /* May need more height on mobile */
-  }
-
-  .hero-text > .animated-description {
-    margin-bottom: 1.5rem; /* Adjust space below animated text before buttons */
   }
 }
 
