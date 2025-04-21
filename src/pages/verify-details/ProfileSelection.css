@@ -1,0 +1,90 @@
+/* src/pages/verify-details/ProfileSelection.css */
+
+/* full‑screen centered background */
+.selection-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: rgba(0,0,0,0.05);
+  }
+  
+  /* card container */
+  .selection-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .selection-card h2 {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .selection-card p {
+    margin-bottom: 1.5rem;
+    color: #666;
+  }
+  
+  /* loading state */
+  .loader {
+    font-size: 1rem;
+    color: #999;
+    margin: 2rem 0;
+  }
+  
+  /* list of profiles */
+  .profile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .profile-info {
+    text-align: left;
+  }
+  
+  /* buttons */
+  .btn-primary {
+    background: #1e90ff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background: #1c86ee;
+  }
+  
+  .btn-outline {
+    background: none;
+    color: #1e90ff;
+    border: 2px solid #1e90ff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  .btn-outline:hover {
+    background: #1e90ff;
+    color: #fff;
+  }
+  

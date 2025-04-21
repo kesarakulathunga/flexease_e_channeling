@@ -1,0 +1,12 @@
+.dashboard-layout {
+    display: flex;
+  }
+  
+  .dashboard-content {
+    margin-left: 240px;        /* match sidebar width */
+    padding: 2rem;
+    width: calc(100% - 240px);
+    min-height: 100vh;
+    background: #fafafa;
+  }
+  
