@@ -1,0 +1,75 @@
+/* Styles for EditProfile component */
+
+.edit-profile-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #f9f9f9; /* Slightly different background */
+  padding: 2.5rem;
+  border-radius: 10px; /* Different border radius */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Different shadow */
+}
+
+.edit-profile-container h2 {
+  color: #444; /* Slightly different heading color */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.edit-profile-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.edit-profile-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.edit-profile-form input[type="text"] {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.edit-profile-form p {
+  color: #777; /* Different paragraph color */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 1.5rem; /* Different gap */
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 2rem;
+}
+
+/* --- Distinct Button Styles --- */
+.btn-edit-cancel {
+  background: #ccc; /* Grey background */
+  border: 1px solid #bbb;
+  color: #333;
+  padding: 0.6rem 1.2rem; /* Different padding */
+  border-radius: 6px; /* Different border radius */
+  cursor: pointer;
+  font-weight: 500; /* Slightly different font weight */
+}
+
+.btn-edit-save {
+  background: #28a745; /* Green background */
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem; /* Different padding */
+  border-radius: 6px; /* Different border radius */
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-edit-cancel:hover {
+  background: #bbb;
+}
+
+.btn-edit-save:hover {
+  background: #218838; /* Darker green on hover */
+}

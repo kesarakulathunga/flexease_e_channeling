@@ -1,17 +1,17 @@
 import React from 'react';
-import DashboardLayout from '../layouts/DashboardLayout'; // Corrected path
 import './Dashboard.css';
 
 export default function Dashboard() {
-  const userName = 'John Doe'; // load from context/API
-  const userDetails = { age:45, email:'john.doe@example.com', nic:'123456789V' };
+  // These would normally come from context/API
+  const userName = 'User'; // Placeholder - get from props or context
+  const userDetails = { age: 45, email: 'john.doe@example.com', nic: '123456789V' };
   const feedbacks = [
-    { id:1, date:'2025-03-20', message:'Great progress on your shoulder mobility—keep it up!' },
-    { id:2, date:'2025-02-10', message:'MRI report normal—no further action needed.' },
+    { id: 1, date: '2025-03-20', message: 'Great progress on your shoulder mobility!' },
+    { id: 2, date: '2025-02-10', message: 'MRI report normal—no further action needed.' },
   ];
 
   return (
-    <DashboardLayout name={userName}>
+    <>
       <header className="dashboard-header">
         <h1>Hi, {userName}</h1>
       </header>
@@ -36,6 +36,6 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
-    </DashboardLayout>
+    </>
   );
 }

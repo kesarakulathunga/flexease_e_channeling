@@ -1,0 +1,35 @@
+/* Styles for UploadReport component */
+.upload-form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+  }
+  .upload-form .field { margin-bottom: 1rem; }
+  .upload-form label { display: block; margin-bottom: .25rem; color: #333; }
+  .upload-form input[type="text"],
+  .upload-form textarea,
+  .upload-form input[type="file"] {
+    width: 100%; padding: .5rem; border: 1px solid #ccc; border-radius:4px;
+  }
+  .upload-form .btn-primary { margin-top:1rem; }
+  
+  .reports-section h2 {
+    margin-bottom:1rem; color:#333;
+  }
+  .reports-list {
+    max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:.75rem;
+  }
+  .report-item {
+    background:#fff; padding:.75rem 1rem; border-radius:6px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08); display:flex; justify-content:space-between; align-items:center;
+  }
+  .btn-primary {
+    background:#1e90ff; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer;
+  }
+  .btn-outline {
+    background:none; border:2px solid #1e90ff; color:#1e90ff; padding:.25rem .75rem; border-radius:4px; cursor:pointer;
+  }
+  .btn-outline:hover { background:#1e90ff; color:#fff; }
+  

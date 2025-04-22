@@ -1,12 +1,11 @@
 .dashboard-layout {
-    display: flex;
-  }
-  
-  .dashboard-content {
-    margin-left: 240px;        /* match sidebar width */
-    padding: 2rem;
-    width: calc(100% - 240px);
-    min-height: 100vh;
+    padding-top: 85px;    /* TopBar height (65px) + TopBar margin (10px) + spacing (10px) */
+    padding-left: 270px;   /* Sidebar width (250px) + Sidebar margin (10px) + spacing (10px) */
+}
+
+.dashboard-content {
+    padding: 2rem; /* Keep internal padding */
+    width: 100%; /* Content takes full width of its container */
+    min-height: calc(100vh - 85px); /* Adjust height based on layout padding-top */
     background: #fafafa;
-  }
-  
+}

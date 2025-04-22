@@ -1,0 +1,45 @@
+.delete-profile {
+    max-width: 420px; /* Slightly larger width */
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2.2rem; /* Slightly larger padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.delete-profile h2 { color: #b30000; margin-bottom: 1rem; } /* Darker red heading */
+.delete-profile p { color: #555; margin-bottom: 2rem; }
+.delete-profile .actions {
+    display: flex;
+    gap: 1.2rem; /* Larger gap */
+    justify-content: center;
+}
+
+/* --- Common Button Styles for Delete --- */
+.delete-profile .actions button {
+    padding: .6rem 1.1rem; /* Consistent padding */
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold; /* Consistent font weight */
+    border: none; /* Reset border for consistency */
+    color: #fff; /* Common text color */
+    min-width: 90px; /* Ensure minimum width */
+    text-align: center;
+}
+
+/* --- Distinct Delete Button Styles --- */
+.btn-delete-cancel {
+    background: #6c757d; /* Grey background */
+}
+
+.btn-delete-confirm {
+    background: #dc3545; /* Bootstrap danger red */
+}
+
+.btn-delete-cancel:hover {
+    background: #5a6268;
+}
+
+.btn-delete-confirm:hover {
+    background: #c82333;
+}

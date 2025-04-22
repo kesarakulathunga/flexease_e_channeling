@@ -1,43 +1,68 @@
 .sidebar {
-    width: 240px;
-    background: #f7f7f7;
-    height: 100vh;
+    width: 250px; /* Slightly wider */
+    background: #f8f9fa; /* Lighter background */
+    height: calc(100vh - 95px); /* 100vh - top (85px) - bottom margin (10px) */
     padding: 1.5rem 1rem;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    box-shadow: 3px 0 10px rgba(0,0,0,0.07); /* Softer shadow */
     position: fixed;
-    top: 0;
-    left: 0;
-  }
-  
-  .sidebar__header {
-    margin-bottom: 2rem;
+    top: 85px; /* TopBar top (10px) + TopBar height (65px) + desired margin (10px) */
+    left: 10px; /* Add margin from left */
+    bottom: 10px; /* Add margin from bottom */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.sidebar__header {
+    margin-bottom: 3.5rem; /* Increased space below header to push nav down */
     text-align: center;
-  }
-  
-  .sidebar__header h3 {
+}
+
+.sidebar__header h3 {
     margin: 0;
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  .sidebar__nav {
+    font-size: 1.25rem; /* Slightly larger */
+    color: #343a40; /* Darker color */
+    font-weight: 600;
+}
+
+.sidebar__nav {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .sidebar__link {
+    gap: 1rem; /* Adjust gap as needed for spacing */
+    flex-grow: 1; /* Allow nav to fill remaining vertical space */
+    justify-content: center; /* Vertically center the links */
+}
+
+.sidebar__link {
     text-decoration: none;
-    color: #555;
+    color: #495057; /* Slightly darker text */
     font-weight: 500;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background 0.2s, color 0.2s;
-  }
-  
-  .sidebar__link:hover,
-  .sidebar__link.active {
-    background: #1e90ff;
-    color: #fff;
-  }
-  
+    padding: 0.8rem 1rem; /* Increased padding for more space */
+    border-radius: 6px; /* Rounded corners for links */
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.1s ease;
+    display: flex; /* Use flexbox for icon alignment */
+    align-items: center; /* Center items vertically */
+    gap: 0.8rem; /* Space between icon (placeholder) and text */
+}
+
+.sidebar__link:hover {
+    background: #e9ecef; /* Lighter hover background */
+    color: #007bff; /* Blue color on hover */
+    transform: translateX(3px); /* Slight move effect on hover */
+}
+
+.sidebar__link.active {
+    background: #007bff; /* Blue background for active link */
+    color: #fff; /* White text for active link */
+    font-weight: 600;
+}
+
+/* Placeholder for icon styling if needed */
+.sidebar__link-icon {
+    /* Add styles here if you use a specific element for icons */
+    /* e.g., width: 20px; height: 20px; */
+    display: inline-block; /* Keep it simple for now */
+    width: 20px; /* Reserve space */
+}
+
+.sidebar__link-text {
+    flex-grow: 1; /* Allow text to take remaining space */
+}

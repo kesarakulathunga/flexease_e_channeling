@@ -1,0 +1,66 @@
+.topbar {
+    position: fixed;
+    top: 10px; /* Add top margin */
+    left: 10px; /* Add left margin */
+    right: 10px; /* Add right margin */
+    height: 65px; /* Slightly increased height */
+    background: rgba(255, 255, 255, 0.85); /* Semi-transparent white from Navbar */
+    backdrop-filter: blur(10px); /* Apply blur effect from Navbar */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border-bottom: 1px solid rgba(234, 234, 234, 0.7); /* Lighter, semi-transparent border like Navbar */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem; /* Increased padding */
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Added shadow */
+    border-radius: 0 0 10px 10px; /* Rounded bottom corners */
+}
+
+.topbar__left {
+    display: flex;
+    align-items: center;
+    /* Remove cursor: pointer; as it's now on the logo */
+}
+
+.topbar__logo {
+    height: 45px; /* Slightly larger logo */
+    margin-right: 1rem;
+    cursor: pointer; /* Add cursor pointer here */
+}
+
+.topbar__center { /* Add styles for the new center div */
+    flex-grow: 1; /* Allow it to take up available space */
+    text-align: center; /* Center the text within */
+}
+
+.topbar__title {
+    font-size: 1.1rem; /* Slightly larger font */
+    font-weight: 600; /* Bolder font */
+    color: #222; /* Darker color */
+}
+
+.topbar__right {
+    display: flex;
+    align-items: center;
+}
+
+.topbar__contact {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+}
+
+.topbar__icon {
+    width: 22px; /* Slightly larger icon */
+    height: 22px; /* Slightly larger icon */
+    margin-right: 0.5rem;
+    filter: brightness(0.8); /* Slightly tone down icon brightness */
+}
+
+.topbar__number {
+    font-size: 0.9rem; /* Slightly larger font */
+    font-weight: 500;
+    color: #444; /* Slightly darker number */
+}

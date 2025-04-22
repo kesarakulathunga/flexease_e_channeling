@@ -1,0 +1,16 @@
+.view-appointments h2 { margin-bottom:1rem; color:#333; }
+.appt-table {
+  width:100%; border-collapse:collapse; margin-bottom:2rem;
+}
+.appt-table th, .appt-table td {
+  border:1px solid #ddd; padding:.75rem; text-align:left;
+}
+.appt-table th {
+  background:#f7f7f7; font-weight:500;
+}
+.btn-link {
+  background:none; border:none; color:#1e90ff; cursor:pointer;
+}
+.btn-link:disabled {
+  color:#ccc; cursor:not-allowed;
+}
