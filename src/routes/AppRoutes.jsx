@@ -7,15 +7,19 @@ import VerifyEmail from '../pages/EmailVerification/VerifyEmail';
 import ProfileSelection from '../pages/verify-details/ProfileSelection';
 import PatientDetailsForm from '../pages/patient-details/PatientDetailsForm';
 
-// Import Dashboard Layout and Pages
+// Import Layouts and Sidebars
 import DashboardLayout from '../pages/layouts/DashboardLayout';
-import Dashboard from '../pages/dashboard/Dashboard';
-import MakeAppointment from '../pages/dashboard/MakeAppointment';
-import UploadReport from '../pages/dashboard/UploadReport';
-import ViewAppointments from '../pages/dashboard/ViewAppointments';
-import EditProfile from '../pages/dashboard/EditProfile'; // Assuming this is the correct component for 'Edit Your Data'
-import DeleteProfile from '../pages/dashboard/DeleteProfile';
-import LogoutPage from '../pages/dashboard/LogoutPage';
+import PatientSidebar from '../components/Sidebar/Sidebar'; // Renamed for clarity
+
+// Import Patient Dashboard Pages
+import Dashboard from '../pages/PatientDashboard/Dashboard';
+import MakeAppointment from '../pages/PatientDashboard/MakeAppointment';
+import UploadReport from '../pages/PatientDashboard/UploadReport';
+import ViewAppointments from '../pages/PatientDashboard/ViewAppointments';
+import EditProfile from '../pages/PatientDashboard/EditProfile';
+import DeleteProfile from '../pages/PatientDashboard/DeleteProfile';
+import LogoutPage from '../pages/PatientDashboard/LogoutPage';
+
 // Import NotFound page if you have one
 
 export default function AppRoutes() {
@@ -26,20 +30,22 @@ export default function AppRoutes() {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<HomePage />} />
-      <Route path="/verify-email" element={<VerifyEmail />} /> {/* Renamed for clarity */}
-      <Route path="/select-profile" element={<ProfileSelection />} /> {/* Renamed for clarity */}
-      <Route path="/patient-details-form" element={<PatientDetailsForm />} /> {/* Renamed for clarity */}
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/select-profile" element={<ProfileSelection />} />
+      <Route path="/patient-details-form" element={<PatientDetailsForm />} />
 
-      {/* Dashboard Routes (Protected potentially) */}
-      <Route path="/dashboard" element={<DashboardLayout name={userName} />}>
-        <Route index element={<Dashboard />} /> {/* Default dashboard page */}
+      {/* Patient Dashboard Routes */}
+      <Route 
+        path="/dashboard" 
+        element={<DashboardLayout name={userName} SidebarComponent={PatientSidebar} />}
+      >
+        <Route index element={<Dashboard />} />
         <Route path="make-appointment" element={<MakeAppointment />} />
         <Route path="upload-report" element={<UploadReport />} />
         <Route path="appointments" element={<ViewAppointments />} />
         <Route path="edit-profile" element={<EditProfile />} />
         <Route path="delete-profile" element={<DeleteProfile />} />
         <Route path="logout" element={<LogoutPage />} />
-        {/* Add other nested dashboard routes here */}
       </Route>
 
       {/* Catch-all or Not Found Route */}

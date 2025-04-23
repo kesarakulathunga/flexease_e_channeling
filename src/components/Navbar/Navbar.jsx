@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/Flexeaselogo.png'; // your logo path
 import './Navbar.css';
 
@@ -24,11 +24,9 @@ export default function Navbar() {
         Welcome to Flexease Physiotherapy Center
       </div>
 
-      {/* Admin Login button on the right */}
+      {/* Removed Admin Login button */}
       <nav className="navbar__menu">
-        <Link to="/admin" className="navbar__admin-button">
-          Admin Login
-        </Link>
+        {/* No items needed here for now */}
       </nav>
     </header>
   );

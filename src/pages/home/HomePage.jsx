@@ -52,7 +52,7 @@ export default function HomePage() {
             <div className="button-group">
               <button
                 className="btn btn-primary"
-                onClick={() => navigate('/verify')}
+                onClick={() => navigate('/verify-email')}
               >
                 Make Appointment
               </button>
