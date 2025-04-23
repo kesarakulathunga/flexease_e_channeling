@@ -1,0 +1,90 @@
+.update-slots-page {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .update-slots-page h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(calc(1 + var(--num-dates)), 1fr);
+    gap: 1px;
+    background: #ccc;
+    margin-bottom: 2rem;
+  }
+  
+  /* define number of date columns */
+  :root {
+    --num-dates: 5;
+  }
+  
+  .grid-header {
+    background: #f0f0f0;
+    text-align: center;
+    padding: 0.5rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+  }
+  .slot-header { background: #e8e8e8; }
+  
+  .slot-cell {
+    background: #fff;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .slot-cell:hover {
+    background: #e6f7ff;
+  }
+  
+  /* Admin-selected */
+  .slot-cell.selected {
+    background: #1e90ff;
+    color: #fff;
+  }
+  
+  /* Patient-reserved */
+  .slot-cell.reserved {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
+  }
+  .slot-cell.reserved:hover {
+    background: #eee;
+  }
+  
+  /* Selected slots list */
+  .selected-slots h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .selected-slots ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .selected-slots li {
+    background: #fff;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .remove-btn:hover {
+    text-decoration: underline;
+  }
+  

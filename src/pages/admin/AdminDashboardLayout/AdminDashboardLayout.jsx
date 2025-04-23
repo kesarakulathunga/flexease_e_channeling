@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 // TopBar lives under components/TopBar
 import TopBar from '../../../components/TopBar/TopBar';
 // Sidebar is right next door under pages/admin/AdminSidebar
-import AdminSidebar from '../OTP/AdminSidebar';
+import AdminSidebar from '../AdminSidebar/AdminSidebar';
 import './AdminDashboardLayout.css';
 
 export default function AdminDashboardLayout() {
