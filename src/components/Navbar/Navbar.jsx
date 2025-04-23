@@ -12,6 +12,10 @@ export default function Navbar() {
     else navigate('/');
   };
 
+  const handleAdminLoginClick = () => {
+    navigate('/admin/login'); // Navigate to admin login page
+  };
+
   return (
     <header className="navbar">
       {/* Logo on the left */}
@@ -24,9 +28,9 @@ export default function Navbar() {
         Welcome to Flexease Physiotherapy Center
       </div>
 
-      {/* Removed Admin Login button */}
+      {/* Admin Login Button */}
       <nav className="navbar__menu">
-        {/* No items needed here for now */}
+        <button className="navbar__admin-login-button" onClick={handleAdminLoginClick}>Admin Login</button>
       </nav>
     </header>
   );

@@ -1,0 +1,126 @@
+/* Reuse your patient VerifyEmail.css verbatim */
+
+.verify-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: rgba(0,0,0,0.05);
+}
+
+.verify-card {
+    background: #fff;
+    border-radius: 12px; /* Slightly larger radius */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12); /* Softer shadow */
+    padding: 2.5rem; /* Increased padding */
+    width: 100%;
+    max-width: 420px; /* Slightly wider */
+    text-align: center;
+}
+
+/* Progress bar */
+.progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+.step {
+    font-size: 0.9rem;
+    color: #999;
+    font-weight: 500;
+}
+.step.active {
+    color: #333;
+    font-weight: bold;
+}
+.divider {
+    width: 2rem;
+    height: 1px;
+    background: #ccc;
+    margin: 0 0.5rem;
+}
+
+/* Input group */
+.input-group {
+    position: relative; /* Needed for absolute positioning of the icon */
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem; /* Increased spacing */
+}
+.input-group .icon {
+    position: absolute; /* Position icon inside the input area */
+    left: 12px; /* Adjust left padding */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px; /* Slightly smaller icon */
+    height: 18px;
+    opacity: 0.6; /* Make icon less prominent */
+}
+.input-group input {
+    flex: 1;
+    padding: 0.75rem 0.75rem 0.75rem 40px; /* Add left padding for the icon */
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Consistent radius */
+    font-size: 1rem; /* Ensure readable font size */
+}
+
+/* Error text */
+.error {
+    color: #d00;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 0.85rem; /* Slightly larger padding */
+    background: #007bff; /* Standard blue */
+    color: #fff;
+    border: none;
+    border-radius: 6px; /* Consistent radius */
+    margin-bottom: 1rem; /* Increased spacing */
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1rem; /* Ensure readable font size */
+    font-weight: 500;
+}
+.btn-primary:hover:not(:disabled) {
+    background: #0056b3; /* Darker blue on hover */
+}
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.btn-link {
+    background: none;
+    border: none;
+    color: #007bff; /* Standard blue */
+    cursor: pointer;
+    margin-top: 0.5rem; /* Increased spacing */
+    text-decoration: underline;
+    font-size: 0.9rem; /* Slightly smaller */
+}
+.btn-link:disabled {
+    color: #999;
+    cursor: default;
+    text-decoration: none;
+}
+
+/* OTP actions (resend/change) */
+.verify-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem; /* Increased spacing */
+}
+
+h2 {
+    margin-bottom: 0.75rem; /* Space below heading */
+}
+
+p {
+    margin-bottom: 1.5rem; /* Space below paragraph */
+    color: #555; /* Softer text color */
+    line-height: 1.5;
+}

@@ -12,13 +12,16 @@ import DashboardLayout from '../pages/layouts/DashboardLayout';
 import PatientSidebar from '../components/Sidebar/Sidebar'; // Renamed for clarity
 
 // Import Patient Dashboard Pages
-import Dashboard from '../pages/PatientDashboard/Dashboard';
-import MakeAppointment from '../pages/PatientDashboard/MakeAppointment';
-import UploadReport from '../pages/PatientDashboard/UploadReport';
-import ViewAppointments from '../pages/PatientDashboard/ViewAppointments';
-import EditProfile from '../pages/PatientDashboard/EditProfile';
-import DeleteProfile from '../pages/PatientDashboard/DeleteProfile';
-import LogoutPage from '../pages/PatientDashboard/LogoutPage';
+import Dashboard from '../pages/dashboard/Dashboard';
+import MakeAppointment from '../pages/dashboard/MakeAppointment';
+import UploadReport from '../pages/dashboard/UploadReport';
+import ViewAppointments from '../pages/dashboard/ViewAppointments';
+import EditProfile from '../pages/dashboard/EditProfile';
+import DeleteProfile from '../pages/dashboard/DeleteProfile';
+import LogoutPage from '../pages/dashboard/LogoutPage';
+
+// Import AdminRoutes component
+import AdminRoutes from './AdminRoutes';
 
 // Import NotFound page if you have one
 
@@ -33,6 +36,9 @@ export default function AppRoutes() {
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/select-profile" element={<ProfileSelection />} />
       <Route path="/patient-details-form" element={<PatientDetailsForm />} />
+
+      {/* Admin Routes */}
+      <Route path="/admin/*" element={<AdminRoutes />} />
 
       {/* Patient Dashboard Routes */}
       <Route 

@@ -1,0 +1,17 @@
+.admin-dashboard-layout {
+    display: flex;
+  }
+  
+  /* push sidebar & content beneath the fixed TopBar */
+  .admin-dashboard-layout > * {
+    margin-top: 60px;  /* height of TopBar */
+  }
+  
+  .admin-dashboard-content {
+    margin-left: 240px;                  /* width of AdminSidebar */
+    padding: 2rem;
+    width: calc(100% - 240px);
+    min-height: calc(100vh - 60px);
+    background: #fafafa;
+  }
+  
