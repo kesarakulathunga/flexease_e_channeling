@@ -1,18 +1,79 @@
-// src/pages/admin/AdminDashboardLayout/AdminDashboardLayout.jsx
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-// TopBar lives under components/TopBar
-import TopBar from '../../../components/TopBar/TopBar';
-// Sidebar is right next door under pages/admin/AdminSidebar
-import AdminSidebar from '../AdminSidebar/AdminSidebar';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import logo from '../../../assets/Flexeaselogo.png';
+import phoneIcon from '../../../assets/phone.svg';
+import slotsIcon      from '../../../assets/calendar.svg';
+import reportsIcon    from '../../../assets/file-text.svg';
+import viewAdminsIcon from '../../../assets/users.svg';
+import deleteIcon     from '../../../assets/trash.svg';
+import logoutIcon     from '../../../assets/log-out.svg';
 import './AdminDashboardLayout.css';
 
-export default function AdminDashboardLayout() {
+export default function AdminLayout({ mobileNumber = '123-456-7890' }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogoClick = () => {
+    if (location.pathname === '/') window.location.reload();
+    else navigate('/');
+  };
+
   return (
-    <div className="admin-dashboard-layout">
-      <TopBar />
-      <AdminSidebar />
-      <main className="admin-dashboard-content">
+    <div className="admin-layout">
+      {/* TopBar */}
+      <header className="topbar">
+        <div className="topbar__left">
+          <img
+            src={logo}
+            alt="Flexease Logo"
+            className="topbar__logo"
+            onClick={handleLogoClick}
+          />
+        </div>
+        <div className="topbar__center">
+          <span className="topbar__title">
+            Welcome to Flexease Physiotherapy Center
+          </span>
+        </div>
+        <div className="topbar__right">
+          <a
+            href={`tel:${mobileNumber.replace(/\D/g, '')}`}
+            className="topbar__contact"
+          >
+            <img src={phoneIcon} alt="Call us" className="topbar__icon" />
+            <span className="topbar__number">{mobileNumber}</span>
+          </a>
+        </div>
+      </header>
+
+      {/* Sidebar */}
+      <aside className="admin-sidebar">
+        <nav className="admin-sidebar__nav">
+          <NavLink to="view-admins"    className="admin-sidebar__link"> 
+            <img src={viewAdminsIcon} className="admin-sidebar__icon" alt="" />
+            View Admins
+          </NavLink>
+          <NavLink to="update-slots"   className="admin-sidebar__link">
+            <img src={slotsIcon}      className="admin-sidebar__icon" alt="" />
+            Update Time Slots
+          </NavLink>
+          <NavLink to="view-reports"   className="admin-sidebar__link">
+            <img src={reportsIcon}    className="admin-sidebar__icon" alt="" />
+            View Reports
+          </NavLink>
+          <NavLink to="delete-profile" className="admin-sidebar__link">
+            <img src={deleteIcon}     className="admin-sidebar__icon" alt="" />
+            Delete Profile
+          </NavLink>
+          <NavLink to="logout"         className="admin-sidebar__link">
+            <img src={logoutIcon}     className="admin-sidebar__icon" alt="" />
+            Log Out
+          </NavLink>
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="admin-content">
         <Outlet />
       </main>
     </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './ViewAdmins.css';
+import './AddAdmin.css'; // Corrected CSS import
 
-export default function ViewAdmins() {
+// Changed to named export and corrected component name
+export function AddAdmin() { 
   const [admins, setAdmins] = useState([]);
   const [newEmail, setNewEmail] = useState('');
   const [error, setError] = useState('');

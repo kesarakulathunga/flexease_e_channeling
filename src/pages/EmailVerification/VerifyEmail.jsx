@@ -80,9 +80,9 @@ export default function VerifyEmail() {
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // On success, navigate to the next step (Details page)
-        console.log("OTP Verified Successfully!");
-        navigate('/verify/details', { state: { email } }); // Navigate to details page
+        // On success, navigate to the admin dummy page
+        console.log("OTP Verified Successfully! Navigating to Admin Dummy Page.");
+        navigate('/admin/dashboard/dummy-page'); // Changed navigation target to the admin dummy page
 
     } catch (err) {
         console.error("OTP Verification Error:", err);
