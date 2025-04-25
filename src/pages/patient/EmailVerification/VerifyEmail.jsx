@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import emailIcon from '../../assets/envelop.svg'; 
+import emailIcon from '../../../assets/envelop.svg';
 import './VerifyEmail.css';
 
 export default function VerifyEmail() {
@@ -115,7 +115,7 @@ export default function VerifyEmail() {
         {!otpSent ? (
           <>
             {/* Header */}
-            <h2>Step 1: Verify Your Email</h2>
+            <h2>Step 1: Verify Your Email</h2>
             <p>We’ll send a one‑time code to confirm your address.</p>
 
             {/* Email input */}

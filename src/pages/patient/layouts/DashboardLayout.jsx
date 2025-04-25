@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom'; // Import Outlet
-import Sidebar from '../../components/Sidebar/Sidebar'; // Corrected path
-import TopBar from '../../components/TopBar/TopBar'; // Import TopBar
+import Sidebar from '../../../components/Sidebar/Sidebar'; // Corrected path
+import TopBar from '../../../components/TopBar/TopBar'; // Corrected path
 import './DashboardLayout.css';
 
 export default function DashboardLayout({ name }) { // Assuming name is passed down or fetched

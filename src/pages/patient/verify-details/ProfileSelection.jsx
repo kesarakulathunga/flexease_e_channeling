@@ -31,7 +31,7 @@ export default function ProfileSelection() {
   }, [email]);
 
   // Use an existing profile
-  const useProfile = (profile) => {
+  const handleUseProfile = (profile) => {
     navigate('/patient-details', { state: { email, profile } });
   };
 
@@ -64,7 +64,7 @@ export default function ProfileSelection() {
                 </div>
                 <button
                   className="btn-primary"
-                  onClick={() => useProfile(p)}
+                  onClick={() => handleUseProfile(p)}
                 >
                   Use This Profile
                 </button>

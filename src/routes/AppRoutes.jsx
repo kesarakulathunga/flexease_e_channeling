@@ -2,23 +2,23 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Import Pages
-import HomePage from '../pages/home/HomePage';
-import VerifyEmail from '../pages/EmailVerification/VerifyEmail';
-import ProfileSelection from '../pages/verify-details/ProfileSelection';
-import PatientDetailsForm from '../pages/patient-details/PatientDetailsForm';
+import HomePage from '../pages/home/HomePage'; // Updated path
+import VerifyEmail from '../pages/patient/EmailVerification/VerifyEmail';
+import ProfileSelection from '../pages/patient/verify-details/ProfileSelection';
+import PatientDetailsForm from '../pages/patient/patient-details/PatientDetailsForm';
 
 // Import Layouts and Sidebars
-import DashboardLayout from '../pages/layouts/DashboardLayout';
+import DashboardLayout from '../pages/patient/layouts/DashboardLayout'; // Updated path
 import PatientSidebar from '../components/Sidebar/Sidebar'; // Renamed for clarity
 
 // Import Patient Dashboard Pages
-import Dashboard from '../pages/dashboard/Dashboard';
-import MakeAppointment from '../pages/dashboard/MakeAppointment';
-import UploadReport from '../pages/dashboard/UploadReport';
-import ViewAppointments from '../pages/dashboard/ViewAppointments';
-import EditProfile from '../pages/dashboard/EditProfile';
-import DeleteProfile from '../pages/dashboard/DeleteProfile';
-import LogoutPage from '../pages/dashboard/LogoutPage';
+import Dashboard from '../pages/patient/dashboard/Dashboard';
+import MakeAppointment from '../pages/patient/dashboard/MakeAppointment';
+import UploadReport from '../pages/patient/dashboard/UploadReport';
+import ViewAppointments from '../pages/patient/dashboard/ViewAppointments';
+import EditProfile from '../pages/patient/dashboard/EditProfile';
+import DeleteProfile from '../pages/patient/dashboard/DeleteProfile';
+import LogoutPage from '../pages/patient/dashboard/LogoutPage';
 
 // Import AdminRoutes component
 import AdminRoutes from './AdminRoutes';

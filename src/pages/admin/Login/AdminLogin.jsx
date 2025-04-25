@@ -4,13 +4,6 @@ import envelopIcon from '../../../assets/envelop.svg'; // Changed from email.svg
 import './AdminLogin.css';
 
 // TODO: replace with real API call
-async function checkAdminEmail(email) {
-  // Simulate a lookup
-  const admins = ['admin@example.com', 'boss@clinic.com'];
-  return admins.includes(email.toLowerCase());
-}
-
-// TODO: replace with real API call
 async function sendAdminOtp(email, isResend = false) {
   console.log(`${isResend ? 'Resending' : 'Sending'} admin OTP to`, email);
   return new Promise(res => setTimeout(res, 800));
@@ -68,7 +61,7 @@ export default function AdminVerifyEmail() {
       setOtpSent(true);
       startResendTimer();
       setOtp('');
-    } catch (err) {
+    } catch {
       setError(`Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
     } finally {
       setIsSending(false);

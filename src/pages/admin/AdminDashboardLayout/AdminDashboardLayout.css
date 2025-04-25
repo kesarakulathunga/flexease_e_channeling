@@ -1,27 +1,29 @@
 /* Base layout container */
 .admin-layout {
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main";
-  grid-template-columns: 240px 1fr;
-  grid-template-rows: 60px 1fr;
+  position: relative;
   min-height: 100vh;
-  height: 100vh;
   width: 100%;
-  overflow: hidden;
+  background: #f0f2f5;
+  padding: 10px;
 }
 
 /* TopBar styles */
 .topbar {
-  grid-area: header;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  height: 60px;
   background: #fff;
-  border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
   z-index: 100;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
+
+/* Existing topbar child styles */
 .topbar__left {
   cursor: pointer;
 }
@@ -48,7 +50,8 @@
   color: #333;
 }
 .topbar__icon {
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   margin-right: 0.5rem;
 }
 .topbar__number {
@@ -57,48 +60,56 @@
 
 /* Sidebar styles */
 .admin-sidebar {
-  grid-area: sidebar;
+  position: fixed;
+  top: 80px; /* topbar height (60px) + gap (10px) + top padding (10px) */
+  left: 10px;
+  width: 250px;
+  bottom: 10px;
   background: #fff;
-  border-right: 1px solid #e0e0e0;
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   overflow-y: auto;
-  height: calc(100vh - 60px);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
+
 .admin-sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
+
 .admin-sidebar__link {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: #555;
-  padding: 0.5rem;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border-radius: 6px;
   transition: background 0.2s, color 0.2s;
 }
+
 .admin-sidebar__link:hover,
 .admin-sidebar__link.active {
   background: #1e90ff;
   color: #fff;
 }
+
 .admin-sidebar__icon {
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   margin-right: 0.75rem;
 }
 
 /* Main content area */
 .admin-content {
-  grid-area: main;
-  background: #fafafa;
-  padding: 2rem;
+  position: fixed;
+  top: 80px; /* Same as sidebar top */
+  left: 270px; /* sidebar width (250px) + gap (10px) + left padding (10px) */
+  right: 10px;
+  bottom: 10px;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
-  height: calc(100vh - 60px);
-}
-
-/* Ensure child pages take full height of content area */
-.admin-content > * {
-  min-height: 100%;
-  height: 100%;
 }
