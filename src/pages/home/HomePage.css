@@ -65,6 +65,11 @@
   display: block;
 }
 
+.animated-description {
+  min-height: 220px; /* Increased to fit more text and prevent image from moving */
+  display: block;
+}
+
 /* Responsive: stack columns on narrower screens */
 @media (max-width: 1024px) {
   .hero {

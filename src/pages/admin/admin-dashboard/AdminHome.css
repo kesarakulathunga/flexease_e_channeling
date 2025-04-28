@@ -1,0 +1,52 @@
+.dashboard-home {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .dashboard-home h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Grid: 2 columns on desktop, 1 on mobile */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Card */
+  .stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  .stat-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .stat-card h3 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1e90ff;
+  }
+  
+  .stat-card p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Loading & error states */
+  .dashboard-home .error {
+    color: #e74c3c;
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 2rem;
+  }
+  

@@ -23,8 +23,8 @@ export default function TopBar({ mobileNumber = '123‑456‑7890' }) {
           onClick={handleLogoClick} // Move click handler to logo
         />
       </div>
-      <div className="topbar__center"> {/* New container for title */}
-        <span className="topbar__title">
+      <div className="topbar__center">
+        <span className="topbar__title" style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '0.03em', fontFamily: 'Montserrat, Verdana, Geneva, Tahoma, sans-serif' }}>
           Welcome to Flexease Physiotherapy Center
         </span>
       </div>

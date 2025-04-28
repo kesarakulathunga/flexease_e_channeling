@@ -1,22 +1,34 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Logout.css'; // Assuming you have or will create this CSS file
+import './Logout.css';
 
-// Add default export
 export default function Logout() {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const handleConfirmLogout = () => {
     // Clear user session/token here (e.g., localStorage.removeItem('adminToken'))
-    console.log("Admin logging out...");
-    // Redirect to login page after logout
+    console.log('Admin logging out...');
     navigate('/admin/login');
-  }, [navigate]);
+  };
+
+  const handleCancel = () => {
+    navigate('/admin/dashboard');
+  };
 
   return (
     <div className="logout-page">
-      <h2>Logging Out...</h2>
-      <p>You are being redirected to the login page.</p>
+      <h2>Log Out</h2>
+      <div className="logout-content">
+        <p className="warning-text">Are you sure you want to log out?</p>
+        <div className="button-group">
+          <button className="cancel-button" onClick={handleCancel}>
+            Cancel
+          </button>
+          <button className="logout-button" onClick={handleConfirmLogout}>
+            Log Out
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -35,9 +35,13 @@
 }
 
 .topbar__title {
-    font-size: 1.1rem; /* Slightly larger font */
-    font-weight: 600; /* Bolder font */
-    color: #222; /* Darker color */
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 auto;
+  font-family: 'Montserrat', Verdana, Geneva, Tahoma, sans-serif;
+  letter-spacing: 0.03em;
 }
 
 .topbar__right {

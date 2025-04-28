@@ -7,6 +7,7 @@ import reportsIcon    from '../../../assets/file-text.svg';
 import viewAdminsIcon from '../../../assets/users.svg';
 import deleteIcon     from '../../../assets/trash.svg';
 import logoutIcon     from '../../../assets/log-out.svg';
+import homeIcon     from '../../../assets/home.svg';
 import './AdminDashboardLayout.css';
 
 export default function AdminLayout({ mobileNumber = '123-456-7890' }) {
@@ -31,7 +32,7 @@ export default function AdminLayout({ mobileNumber = '123-456-7890' }) {
           />
         </div>
         <div className="topbar__center">
-          <span className="topbar__title">
+          <span className="topbar__title" style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '0.03em', fontFamily: 'Montserrat, Verdana, Geneva, Tahoma, sans-serif' }}>
             Welcome to Flexease Physiotherapy Center
           </span>
         </div>
@@ -49,6 +50,16 @@ export default function AdminLayout({ mobileNumber = '123-456-7890' }) {
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <nav className="admin-sidebar__nav">
+          <NavLink
+            to="/admin/dashboard"
+            end
+            className={({ isActive }) =>
+              `admin-sidebar__link${isActive ? ' active' : ''}`
+            }
+          >
+            <img src={homeIcon} className="admin-sidebar__icon" alt="" />
+            Home
+          </NavLink>
           <NavLink to="/admin/dashboard/view-admins"    className="admin-sidebar__link"> 
             <img src={viewAdminsIcon} className="admin-sidebar__icon" alt="" />
             View Admins

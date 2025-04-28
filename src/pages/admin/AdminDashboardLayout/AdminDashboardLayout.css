@@ -35,9 +35,11 @@
   text-align: center;
 }
 .topbar__title {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #333;
+  text-align: center;
+  font-size: 1.1rem; /* Slightly larger font */
+  font-weight: 600; /* Bolder */
+  color: #2c3e50; /* Darker, muted color */
+  margin: 0 auto; /* Add some margin to help center it visually if space-between pushes it */
 }
 .topbar__right {
   display: flex;
