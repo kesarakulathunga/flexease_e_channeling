@@ -6,6 +6,7 @@ import HomePage from '../pages/home/HomePage'; // Updated path
 import VerifyEmail from '../pages/patient/EmailVerification/VerifyEmail';
 import ProfileSelection from '../pages/patient/verify-details/ProfileSelection';
 import PatientDetailsForm from '../pages/patient/patient-details/PatientDetailsForm';
+import EditProfileEmail from '../pages/patient/dashboard/EditProfileEmail';
 
 // Import Layouts and Sidebars
 import DashboardLayout from '../pages/patient/layouts/DashboardLayout'; // Updated path
@@ -50,6 +51,7 @@ export default function AppRoutes() {
         <Route path="upload-report" element={<UploadReport />} />
         <Route path="appointments" element={<ViewAppointments />} />
         <Route path="edit-profile" element={<EditProfile />} />
+        <Route path="edit-profile-email" element={<EditProfileEmail />} />
         <Route path="delete-profile" element={<DeleteProfile />} />
         <Route path="logout" element={<LogoutPage />} />
       </Route>
