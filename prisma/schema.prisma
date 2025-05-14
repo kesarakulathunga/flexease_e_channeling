@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  role  String
+}
+
+model PatientProfile {
+  id           Int      @id @default(autoincrement())
+  email        String
+  fullName     String
+  age          Int
+  nicNumber    String
+  mobileNumber String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt @default(now())
+
+  @@unique([email, fullName])
+}
+
+model AdminProfile {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model OTP {
+  id        Int        @id @default(autoincrement())
+  email     String
+  code      String
+  context   OTPContext
+  patientId Int?
+  expiresAt DateTime
+  used      Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  purpose   String     @default("registration")
+}
+
+model TimeSlot {
+  id          Int      @id @default(autoincrement())
+  adminId     Int
+  slotDate    DateTime
+  slotTime    DateTime
+  isAvailable Boolean  @default(true)
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  patientId  Int
+  timeSlotId Int
+  status     String   @default("PENDING")
+  bookedAt   DateTime @default(now())
+}
+
+model Report {
+  id         Int      @id @default(autoincrement())
+  patientId  Int
+  title      String
+  notes      String?
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  adminId   Int
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+}
+
+enum OTPContext {
+  LOGIN
+  EMAIL_CHANGE
+}

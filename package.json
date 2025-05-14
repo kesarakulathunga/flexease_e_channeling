@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
     "dev": "nodemon src/server.js",
-    "migrate": "prisma migrate dev"
-
-
+    "migrate": "prisma migrate dev",
+    "seed": "node prisma/seed.js",
+    "studio": "node run-studio.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +20,9 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "fs": "^0.0.1-security",
     "nodemon": "^3.1.10",
     "prisma": "^6.7.0"
   }
