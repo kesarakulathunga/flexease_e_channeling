@@ -1,0 +1,317 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { authService } from '../../../services';
+import { useAuth } from '../../../context/AuthContext';
+import emailIcon from '../../../assets/envelop.svg';
+import './VerifyEmail.css';
+
+export default function VerifyEmail() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState(''); // State for OTP input
+  const [error, setError] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false); // State for OTP verification
+  const [resendTimer, setResendTimer] = useState(0); // Timer for resend button
+  const [profiles, setProfiles] = useState([]); // Available profiles after verification
+  // Three possible steps: 'email', 'otp', 'select'
+  const [step, setStep] = useState('email');
+  
+  // Timer effect for resend OTP
+  useEffect(() => {
+    let interval;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer(prev => prev - 1);
+      }, 1000);
+    } else if (interval) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval); // Cleanup on unmount or timer change
+  }, [resendTimer]);
+  const startResendTimer = () => {
+    setResendTimer(60); // Start a 60-second timer
+  };
+
+  const handleCheckEmail = async (isResend = false) => {
+    if (!isResend) {
+      // Basic email format validation on initial send
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+    }
+    setError('');
+    setIsSending(true);
+    try {
+      // Step 1: Check email and send OTP
+      await authService.checkEmail(email, isResend);
+
+      startResendTimer(); // Start the resend timer
+      setStep('otp'); // Move to OTP step
+      
+      if (!isResend) {
+        console.log("OTP Sent, showing OTP input section.");
+      } else {
+        console.log("OTP Resent.");
+      }
+      // Clear previous OTP input on send/resend
+      setOtp('');
+
+    } catch (err) {
+      console.error("Email check error:", err);
+      setError(`Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
+    } finally {
+      setIsSending(false);
+    }
+  };  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      setError('Please enter a valid 6-digit OTP.');
+      return;
+    }
+    setError('');
+    setIsVerifying(true);
+    try {
+      // Step 2: Verify OTP with backend
+      const response = await authService.verifyOTP(email, otp);
+      
+      // Store user data in context after successful verification
+      if (response.user) {
+        await login(response.user, false);
+      }
+
+      // Check if response has profiles
+      if (response.profiles && response.profiles.length > 0) {
+        setProfiles(response.profiles);
+        setStep('select'); // Move to profile selection step
+      } else {
+        // No profiles found, redirect to registration form
+        navigate('/patient-details-form', { 
+          state: { email, verified: true } 
+        });
+      }
+    } catch (err) {
+      console.error('Verification error:', err);
+      setError('Invalid OTP or verification failed. Please try again.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+  const handleSelectAccount = async (profileId) => {
+    try {
+      // Step 3: Select an existing profile
+      const response = await authService.selectAccount(profileId);
+      
+      if (response.profile) {
+        // Navigate to dashboard after successful profile selection
+        navigate('/dashboard');
+      } else {
+        setError('Failed to select account. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error selecting account:', error);
+      setError('Failed to select account. Please try again.');
+    }
+  };
+
+  const handleCreateNew = () => {
+    // Navigate to patient details form for creating a new profile
+    navigate('/patient-details-form', { 
+      state: { email, verified: true } 
+    });
+  };
+
+  const handleBackToEmail = () => {
+    setStep('email');
+    setOtp('');
+    setError('');
+    setResendTimer(0); // Reset timer
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state]);
+
+  return (
+    <div className="verify-page">
+      <div className="verify-card">
+        {/* Progress indicator */}
+        <div className="progress">
+          <div className={`step ${!otpSent ? 'active' : ''}`}>Email</div>
+          <div className="divider" />
+          <div className={`step ${otpSent ? 'active' : ''}`}>OTP</div>
+          <div className="divider" />
+          <div className="step">Details</div>
+        </div>
+
+        {step === 'otp' && !otpSent ? (
+          <>
+            {/* Header */}
+            <h2>Step 1: Verify Your Email</h2>
+            <p>We’ll send a one‑time code to confirm your address.</p>
+
+            {/* Email input */}
+            <div className="input-group">
+              <img src={emailIcon} alt="" className="icon" />
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                disabled={isSending}
+                aria-label="Email Address"
+              />
+            </div>
+            {error && <div className="error">{error}</div>}
+
+            {/* Primary action */}
+            <button
+              className="btn-primary"
+              onClick={() => handleSendOtp(false)}
+              disabled={isSending || !email}
+            >
+              {isSending ? 'Sending…' : 'Send OTP'}
+            </button>
+
+            {/* Secondary action */}
+            <button
+              className="btn-link"
+              onClick={() => { setEmail(''); setError(''); }}
+              disabled={isSending}
+            >
+              Clear Email
+            </button>
+          </>
+        ) : step === 'otp' && otpSent ? (
+          <>
+            {/* Header */}
+            <h2>Step 2: Enter OTP</h2>
+            <p>Enter the 6-digit code sent to <strong>{email}</strong>.</p>
+
+            {/* OTP input */}
+            <div className="input-group">
+              {/* Consider adding an icon for OTP */}
+              <input
+                type="text" // Use text for easier input on mobile, consider "tel" or "number" with pattern
+                inputMode="numeric" // Hint for numeric keyboard
+                pattern="\d{6}" // Pattern for validation (optional)
+                maxLength="6" // Limit input length
+                placeholder="Enter 6-digit OTP"
+                value={otp}
+                onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))} // Allow only digits
+                disabled={isVerifying || isSending} // Disable while verifying or resending
+                aria-label="One-Time Password"
+              />
+            </div>
+            {error && <div className="error">{error}</div>}
+
+            {/* Primary action */}
+            <button
+              className="btn-primary"
+              onClick={handleVerifyOtp}
+              disabled={isVerifying || isSending || otp.length !== 6}
+            >
+              {isVerifying ? 'Verifying…' : 'Verify OTP'}
+            </button>
+
+            {/* Resend OTP & Change Email Actions */}
+            <div className="verify-actions">
+                 <button
+                    className="btn-link"
+                    onClick={() => handleSendOtp(true)} // Call handleSendOtp with resend flag
+                    disabled={isSending || isVerifying || resendTimer > 0}
+                 >
+                    {isSending ? 'Resending...' : (resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP')}
+                 </button>
+                 {/* Moved Change Email button here */}
+                 <button
+                    className="btn-link"
+                    onClick={handleBackToEmail}
+                    disabled={isSending || isVerifying}
+                 >
+                    Change Email
+                 </button>
+            </div>
+          </>
+        ) : step === 'select' ? (
+          <>
+            <h2>Select Account</h2>
+            <p>You have the following accounts under <strong>{email}</strong>:</p>
+            <ul>
+              {accounts.map(acc => (
+                <li key={acc.id}>
+                  <button onClick={() => handleSelectAccount(acc.id)}>
+                    {acc.name} (Age: {acc.age})
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button onClick={() => setStep('new')}>Create New Account</button>
+          </>
+        ) : step === 'new' ? (
+          <>
+            <h2>Create New Account</h2>
+            {error && <div className="error">{error}</div>}
+            <form className="create-account-form" onSubmit={handleCreateAccount}>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={newAccount.name}
+                onChange={e => setNewAccount({ ...newAccount, name: e.target.value })}
+                required
+              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  placeholder="Age (years)"
+                  value={newAccount.age}
+                  onChange={e => setNewAccount({ ...newAccount, age: e.target.value.replace(/\D/g, '') })}
+                  required
+                  style={{ width: '100%' }}
+                />
+                {error && error.toLowerCase().includes('age') && (
+                  <div className="error" style={{ position: 'absolute', left: 0, top: '100%' }}>
+                    {error}
+                  </div>
+                )}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{
+                  background: '#f0f0f0',
+                  border: '1px solid #cce0f7',
+                  borderRadius: '4px 0 0 4px',
+                  padding: '0.75rem 0.75rem',
+                  fontSize: '1rem',
+                  color: '#555',
+                  borderRight: 'none'
+                }}>+94</span>
+                <input
+                  type="text"
+                  placeholder="Phone (9 digits)"
+                  value={newAccount.phone}
+                  onChange={e => {
+                    // Only allow numbers, max 9 digits
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 9);
+                    setNewAccount({ ...newAccount, phone: val });
+                  }}
+                  required
+                  maxLength={9}
+                  style={{
+                    borderRadius: '0 4px 4px 0',
+                    borderLeft: 'none',
+                    flex: 1
+                  }}
+                />
+              </div>
+              <button type="submit">Create Account</button>
+            </form>
+          </>
+        ) : null}
+      </div>
+    </div>
+  );
+}

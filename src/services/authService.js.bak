@@ -1,0 +1,284 @@
+// src/services/authService.js
+import api from './api';
+
+const authService = {  /**
+   * Step 1: Check email and send OTP
+   * @param {string} email The email address
+   * @param {boolean} isResend Whether it's a resend request
+   * @returns {Promise<Object>} Response data
+   */  checkEmail: async (email, isResend = false) => {
+    try {
+      console.log(`Attempting to send OTP to ${email}${isResend ? ' (resend)' : ''}`);
+      const response = await api.post('/auth/check-email', { email, isResend });
+      console.log('OTP send successful:', response);
+      
+      // Map backend field names to what our frontend expects if needed
+      return {
+        exists: response.emailExists !== undefined ? response.emailExists : response.exists,
+        message: response.message || 'OTP sent successfully',
+        ...response // Include all other fields as-is
+      };
+    } catch (error) {
+      console.error('Error in checkEmail:', error);
+      
+      // Detailed error handling based on response type
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response from server:', error.response.data);
+        
+        // Handle specific error status codes
+        if (error.response.status === 400) {
+          console.error('Bad request - check input data');
+        } else if (error.response.status === 404) {
+          console.error('Endpoint not found - check URL');
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Network error - no response received');
+      } else {
+        // Something happened in setting up the request
+        console.error('Error setting up request:', error.message);
+      }
+      
+      // Check if it's a connection error or server error
+      if (error.message && error.message.includes('Network Error')) {
+        console.error('Backend connection failed. Make sure your backend is running on port 4000.');
+      }
+      
+      // Rethrow the error for the component to handle
+      throw error;
+    }
+  },
+  /**
+   * Step 2: Verify OTP code
+   * @param {string} email The email address
+   * @param {string} otp The OTP code
+   * @returns {Promise<Object>} Response with token, user data, and profiles if any exist
+   */  verifyOTP: async (email, otp) => {
+    try {
+      console.log(`Verifying OTP for ${email}`);
+      const response = await api.post('/auth/verify-email', { email, otp });
+      console.log('OTP verification successful:', response);
+      
+      // Save auth token to localStorage if provided
+      if (response.token) {
+        localStorage.setItem('authToken', response.token);
+        
+        // Store user data if returned
+        if (response.user) {
+          localStorage.setItem('user', JSON.stringify(response.user));
+        }
+      }
+      
+      // Transform the response to have a consistent structure
+      const transformedResponse = {
+        ...response,
+        verified: response.verified !== undefined ? response.verified : true,
+        hasExistingAccounts: response.hasExistingAccounts !== undefined ? 
+                              response.hasExistingAccounts : 
+                              !!(response.profiles?.length || response.patients?.length)
+      };
+      
+      // Handle different profile structure formats
+      if (response.profiles) {
+        transformedResponse.profiles = response.profiles.map(profile => ({
+          ...profile,
+          id: profile.id || profile._id || profile.patientId
+        }));
+      } else if (response.patients) {
+        transformedResponse.profiles = response.patients.map(patient => ({
+          ...patient,
+          id: patient.id || patient._id || patient.patientId,
+          name: patient.name || patient.fullName
+        }));
+      }
+      
+      return transformedResponse;
+    } catch (error) {
+      console.error('Error in verifyOTP:', error);
+      
+      // Check if it's a connection error or server error
+      if (error.message && error.message.includes('Network Error')) {
+        console.error('Backend connection failed. Make sure your backend is running on port 4000.');
+      }
+      
+      // Rethrow the error for the component to handle
+      throw error;
+    }
+  },  /**
+   * Step 3: Select an existing profile from options
+   * @param {string} profileId The ID of the selected profile
+   * @returns {Promise<Object>} Response with selected profile data
+   */  selectAccount: async (profileId) => {
+    try {      console.log(`Selecting profile with ID: ${profileId}`);
+      // The endpoint is /patient/select (singular)
+      const response = await api.post('/patient/select', { profileId });
+      console.log('Profile selection successful:', response);
+        // Store the selected profile in localStorage
+      if (response.profile) {
+        const profile = {
+          ...response.profile,
+          id: response.profile.id || response.profile._id || response.profile.patientId
+        };
+        localStorage.setItem('currentProfile', JSON.stringify(profile));
+      } else if (response.patient) {
+        // Handle alternative response structure
+        const profile = {
+          ...response.patient,
+          id: response.patient.id || response.patient._id || response.patient.patientId,
+          name: response.patient.name || response.patient.fullName
+        };
+        localStorage.setItem('currentProfile', JSON.stringify(profile));
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('Error in selectAccount:', error);
+      
+      // Check if it's a connection error or server error
+      if (error.message && error.message.includes('Network Error')) {
+        console.error('Backend connection failed. Make sure your backend is running on port 4000.');
+      }
+      
+      // Rethrow the error for the component to handle
+      throw error;
+    }
+  },
+    /**
+   * Step 3 Alternative: Register a new patient with verified email
+   * @param {Object} patientData The patient registration data
+   * @returns {Promise<Object>} Response with newly created profile data
+   */
+  registerVerifiedPatient: async (patientData) => {
+    try {
+      console.log('Registering verified patient:', patientData);
+      // Format the data to match backend expectations
+      const formattedData = {
+        email: patientData.email,
+        fullName: patientData.name,
+        age: patientData.age,
+        nicNumber: patientData.nic,
+        verifiedEmail: patientData.email      };
+      console.log('Formatted data for backend:', formattedData);
+      const response = await api.post('/patient/register-verified', formattedData);
+      console.log('Registration successful:', response);
+        // Store the new profile in localStorage
+      if (response.profile) {
+        const profile = {
+          ...response.profile,
+          id: response.profile.id || response.profile._id // Handle different id field names
+        };
+        localStorage.setItem('currentProfile', JSON.stringify(profile));
+      } else if (response.patient) {
+        // Handle alternative response structure
+        const profile = {
+          ...response.patient,
+          id: response.patient.id || response.patient._id || response.patient.patientId,
+          name: response.patient.name || response.patient.fullName
+        };
+        localStorage.setItem('currentProfile', JSON.stringify(profile));
+      }
+        return response;    } catch (error) {
+      console.error('Error in registerVerifiedPatient:', error);
+      
+      // Enhanced error handling
+      if (error.response) {
+        // The server responded with a status code outside of 2xx
+        console.error('Server error:', error.response.data);
+        
+        // Display appropriate message to user based on status code
+        if (error.response.status === 400) {
+          console.error('Invalid data format. Please check your inputs.');
+        } else if (error.response.status === 409) {
+          console.error('A patient with this email or NIC already exists.');
+        } else if (error.response.status === 401 || error.response.status === 403) {
+          console.error('Authentication error. Please verify your email again.');
+        } else if (error.response.status === 404) {
+          console.error('API endpoint not found. Please check if you are using the correct URL.');
+        } else {
+          console.error(`Server error (${error.response.status})`);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Network error - no response received');
+        console.error('Backend connection failed. Make sure your backend is running on port 4000.');
+      } else {
+        // Something happened in setting up the request
+        console.error('Error setting up request:', error.message);
+      }
+      } else if (error.request) {
+        // The request was made but no response received
+        console.error('Network error - no response');
+      } else if (error.message && error.message.includes('Network Error')) {
+        console.error('Backend connection failed. Make sure your backend is running on port 4000.');
+      }
+      
+      // Rethrow the error for the component to handle
+      throw error;
+    }
+  },
+  
+  /**
+   * Admin login with OTP
+   * @param {string} email Admin email
+   * @param {string} otp OTP code
+   * @returns {Promise<Object>} Response with token and admin data
+   */
+  adminLogin: async (email, otp) => {
+    const response = await api.post('/admin/login', { email, otp });
+    
+    if (response.token) {
+      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('isAdmin', 'true');
+      
+      if (response.admin) {
+        localStorage.setItem('user', JSON.stringify(response.admin));
+      }
+    }
+    
+    return response;
+  },
+
+  /**
+   * Logout the current user
+   * @returns {Promise<void>}
+   */
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      // Clear local storage regardless of server response
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('isAdmin');
+    }
+  },
+
+  /**
+   * Get the current authenticated user
+   * @returns {Object|null} The user object or null
+   */
+  getCurrentUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+
+  /**
+   * Check if user is authenticated
+   * @returns {boolean} True if authenticated
+   */
+  isAuthenticated: () => {
+    return !!localStorage.getItem('authToken');
+  },
+
+  /**
+   * Check if user is an admin
+   * @returns {boolean} True if admin
+   */
+  isAdmin: () => {
+    return localStorage.getItem('isAdmin') === 'true';
+  }
+};
+
+export default authService;
