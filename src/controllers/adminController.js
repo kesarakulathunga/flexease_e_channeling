@@ -1,5 +1,6 @@
 // src/controllers/adminController.js
 const { prisma } = require('../config');
+const adminService = require('../services/adminService');
 
 // 1. Create a new admin profile
 exports.createAdmin = async (req, res, next) => {
@@ -15,27 +16,17 @@ exports.createAdmin = async (req, res, next) => {
       return res.status(400).json({ error: 'Admin with this email already exists' });
     }
     
-    // Create admin profile
-    const admin = await prisma.adminProfile.create({
-      data: { 
-        email, 
-        fullName, 
-        specialty, 
-        phone 
-      }
-    });
+    // Create admin using the service
+    const admin = await adminService.createAdmin({ email, fullName, specialty, phone });
     
-    // Ensure there's a corresponding user record with ADMIN role
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: { role: 'ADMIN' },
-      create: { 
-        email, 
-        role: 'ADMIN' 
-      }
-    });
-    
-    res.status(201).json(admin);
+    res.status(201).json(admin);  } catch (err) { next(err); }
+};
+
+// New endpoint to get only admin emails
+exports.getAdminEmails = async (req, res, next) => {
+  try {
+    const adminEmails = await adminService.getAllAdminEmails();
+    res.json(adminEmails);
   } catch (err) { next(err); }
 };
 

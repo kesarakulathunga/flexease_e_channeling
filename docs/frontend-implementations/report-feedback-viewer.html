@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Feedback Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        .header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .feedback-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        .feedback-message {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .meta {
+            color: #6c757d;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+            background-color: #ffeeee;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        .page-button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            background-color: white;
+        }
+        .active-page {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+        #login-form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Report Feedback Viewer</h1>
+        </div>
+        
+        <div id="login-form">
+            <h2>Login</h2>
+            <div>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <div>
+                <button id="login-button">Login</button>
+            </div>
+        </div>
+        
+        <div id="feedback-container" style="display: none;">
+            <div id="report-info" class="header">
+                <h2 id="report-title">Loading report...</h2>
+                <p id="report-date"></p>
+            </div>
+            
+            <div id="report-id-input">
+                <h3>View Feedback for Report</h3>
+                <input type="number" id="report-id" placeholder="Enter Report ID">
+                <button id="load-report">Load Feedback</button>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                Loading feedback...
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="feedback-list"></div>
+            
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:4000/api';
+        
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('login-button');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const reportInfoTitle = document.getElementById('report-title');
+        const reportInfoDate = document.getElementById('report-date');
+        const reportIdInput = document.getElementById('report-id');
+        const loadReportButton = document.getElementById('load-report');
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const feedbackList = document.getElementById('feedback-list');
+        const paginationElement = document.getElementById('pagination');
+
+        // State
+        let token = localStorage.getItem('token');
+        let currentPage = 1;
+        let currentReportId = null;
+        let paginationData = {};
+
+        // Check if already logged in
+        if (token) {
+            loginForm.style.display = 'none';
+            feedbackContainer.style.display = 'block';
+        }
+
+        // Login function
+        async function login() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+                
+                token = data.token;
+                localStorage.setItem('token', token);
+                
+                loginForm.style.display = 'none';
+                feedbackContainer.style.display = 'block';
+                
+            } catch (error) {
+                showError(error.message || 'Failed to login');
+            }
+        }
+
+        // Format date function
+        function formatDate(dateString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Show error function
+        function showError(message) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            loadingElement.style.display = 'none';
+        }
+
+        // Clear error function
+        function clearError() {
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+
+        // Fetch feedback function
+        async function fetchFeedback(reportId, page = 1) {
+            if (!reportId) {
+                showError('Please enter a report ID');
+                return;
+            }
+            
+            if (!token) {
+                showError('You need to be logged in to view feedback');
+                return;
+            }
+            
+            currentReportId = reportId;
+            currentPage = page;
+            
+            clearError();
+            loadingElement.style.display = 'block';
+            feedbackList.innerHTML = '';
+            paginationElement.innerHTML = '';
+            
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/patients/reports/${reportId}/feedback?page=${page}&limit=10`,
+                    {
+                        headers: { 
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Error ${response.status}: Failed to fetch feedback`);
+                }
+                
+                const data = await response.json();
+                
+                // Update report info
+                reportInfoTitle.textContent = `Feedback for: ${data.reportTitle}`;
+                reportInfoDate.textContent = `Report uploaded on: ${formatDate(data.uploadedAt)}`;
+                
+                // Save pagination data
+                paginationData = data.pagination;
+                
+                // Display feedback
+                if (data.feedback.length === 0) {
+                    feedbackList.innerHTML = '<p>No feedback has been provided for this report yet.</p>';
+                } else {
+                    data.feedback.forEach(item => {
+                        const feedbackItem = document.createElement('div');
+                        feedbackItem.className = 'feedback-item';
+                        
+                        const message = document.createElement('p');
+                        message.className = 'feedback-message';
+                        message.textContent = item.message;
+                        
+                        const meta = document.createElement('div');
+                        meta.className = 'meta';
+                        
+                        const idSpan = document.createElement('span');
+                        idSpan.textContent = `Feedback ID: ${item.id}`;
+                        
+                        const dateSpan = document.createElement('span');
+                        dateSpan.textContent = `Date: ${formatDate(item.createdAt)}`;
+                        
+                        meta.appendChild(idSpan);
+                        meta.appendChild(dateSpan);
+                        
+                        if (item.adminId) {
+                            const adminSpan = document.createElement('span');
+                            adminSpan.textContent = `Admin ID: ${item.adminId}`;
+                            meta.appendChild(adminSpan);
+                        }
+                        
+                        feedbackItem.appendChild(message);
+                        feedbackItem.appendChild(meta);
+                        
+                        feedbackList.appendChild(feedbackItem);
+                    });
+                    
+                    // Create pagination controls if needed
+                    if (paginationData.totalPages > 1) {
+                        createPaginationControls();
+                    }
+                }
+                
+                loadingElement.style.display = 'none';
+                
+            } catch (error) {
+                showError(error.message || 'Failed to fetch feedback');
+            }
+        }
+
+        // Create pagination controls
+        function createPaginationControls() {
+            paginationElement.innerHTML = '';
+            
+            if (paginationData.hasPrevPage) {
+                const prevButton = document.createElement('button');
+                prevButton.className = 'page-button';
+                prevButton.textContent = 'Previous';
+                prevButton.addEventListener('click', () => fetchFeedback(currentReportId, currentPage - 1));
+                paginationElement.appendChild(prevButton);
+            }
+            
+            for (let i = 1; i <= paginationData.totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.className = 'page-button';
+                if (i === currentPage) {
+                    pageButton.classList.add('active-page');
+                }
+                pageButton.textContent = i;
+                pageButton.addEventListener('click', () => fetchFeedback(currentReportId, i));
+                paginationElement.appendChild(pageButton);
+            }
+            
+            if (paginationData.hasNextPage) {
+                const nextButton = document.createElement('button');
+                nextButton.className = 'page-button';
+                nextButton.textContent = 'Next';
+                nextButton.addEventListener('click', () => fetchFeedback(currentReportId, currentPage + 1));
+                paginationElement.appendChild(nextButton);
+            }
+        }
+
+        // Event Listeners
+        loginButton.addEventListener('click', login);
+        loadReportButton.addEventListener('click', () => {
+            const reportId = reportIdInput.value;
+            fetchFeedback(reportId);
+        });
+
+        // Handle Enter key in inputs
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                passwordInput.focus();
+            }
+        });
+        
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+        
+        reportIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const reportId = reportIdInput.value;
+                fetchFeedback(reportId);
+            }
+        });
+    </script>
+</body>
+</html>

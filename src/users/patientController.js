@@ -25,10 +25,15 @@ exports.createPatientWithAuth = async (req, res, next) => {
     if (existingPatient) {
       return res.status(400).json({ error: 'A patient with this email and name already exists' });
     }
-    
-    // Create the patient profile
+      // Create the patient profile
     const patient = await prisma.patientProfile.create({
-      data: { email, fullName, age, nicNumber }
+      data: { 
+        email, 
+        fullName, 
+        age: Number(age), 
+        nicNumber: nicNumber || null,
+        mobileNumber: req.body.mobileNumber || null 
+      }
     });
     
     // Create user record if it doesn't exist
@@ -82,6 +87,9 @@ exports.getAllPatients = async (req, res, next) => {
 exports.getPatientById = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      return res.status(400).json({ error: 'Invalid patient ID' });
+    }
     const patient = await prisma.patientProfile.findUnique({ where: { id } });
     if (!patient) return res.status(404).json({ error: 'Not found' });
     res.json(patient);

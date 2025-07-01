@@ -1,6 +1,19 @@
 // src/users/adminController.js
 const { prisma } = require('../config');
 
+// Get admin emails only
+exports.getAdminEmails = async (req, res, next) => {
+  try {
+    const admins = await prisma.adminProfile.findMany({
+      select: {
+        id: true,
+        email: true
+      }
+    });
+    res.json(admins);
+  } catch (err) { next(err); }
+};
+
 // 1. Create a new admin profile
 exports.createAdmin = async (req, res, next) => {
   try {

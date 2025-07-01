@@ -4,7 +4,7 @@ const patientService = require('../services/patientService');
 const { sendOtp, verifyOtp } = require('../auth/otpService');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
-const { createSession } = require('../services/sessionService');
+const { createSession, invalidateSession } = require('../services/sessionService');
 const logger = require('../utils/logger');
 
 /**
@@ -68,10 +68,14 @@ exports.updatePatientBasicInfo = async (req, res, next) => {
       return res.status(403).json({ error: 'Unauthorized to update profile' });
     }
     
-    const { fullName, age, nicNumber, mobileNumber } = req.body;
+    // Handle different field name variations from frontend
+    const fullName = req.body.fullName || req.body.name || req.body.firstName;
+    const age = req.body.age;
+    const nicNumber = req.body.nicNumber;
+    const mobileNumber = req.body.mobileNumber || req.body.mobile || req.body.phoneNumber || req.body.contact;
     
     // Validate inputs
-    if (!fullName || !age || !nicNumber) {
+    if (!fullName || !age) {
       logger.warn(`Invalid profile update data - missing required fields`, {
         patientId: id,
         providedFields: Object.keys(req.body)
@@ -86,8 +90,7 @@ exports.updatePatientBasicInfo = async (req, res, next) => {
       });
       return res.status(400).json({ error: 'Invalid age value' });
     }
-    
-    // Update the profile
+      // Update the profile
     const updatedPatient = await patientService.updatePatientBasicInfo(id, {
       fullName,
       age,
@@ -99,7 +102,20 @@ exports.updatePatientBasicInfo = async (req, res, next) => {
       fieldsUpdated: ['fullName', 'age', 'nicNumber', 'mobileNumber'].filter(f => req.body[f] !== undefined)
     });
     
-    res.json(updatedPatient);
+    // Format response with field variations to match frontend expectations
+    const responseProfile = {
+      ...updatedPatient,
+      // Include field name variations to ensure frontend compatibility
+      name: updatedPatient.fullName,
+      firstName: updatedPatient.fullName,
+      mobile: updatedPatient.mobileNumber,
+      phoneNumber: updatedPatient.mobileNumber,
+      contact: updatedPatient.mobileNumber,
+      // Ensure ID is included
+      id: id
+    };
+    
+    res.json(responseProfile);
   } catch (err) {
     logger.error(`Error updating patient profile`, {
       patientId: req.params.id,
@@ -291,6 +307,102 @@ exports.verifyEmailChange = async (req, res, next) => {
     logger.error(`Error completing email change process`, {
       patientId: req.user.patientId,
       newEmail: req.body.newEmail,
+      error: err.message,
+      stack: err.stack
+    });
+    next(err);
+  }
+};
+
+/**
+ * Delete patient profile and all associated data
+ * This function handles the complete deletion of a patient's data including:
+ * - Patient profile
+ * - Related appointments
+ * - Related feedback
+ * - User sessions
+ * - User account
+ */
+exports.deletePatientProfile = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    logger.info(`Profile deletion request for patient ID: ${id}`, {
+      userId: req.user.id,
+      userRole: req.user.role
+    });
+    
+    // Authorization check - ensure user can only delete their own profile
+    if (req.user.patientId !== id && req.user.role !== 'ADMIN') {
+      logger.warn(`Unauthorized profile deletion attempt`, {
+        userId: req.user.id,
+        userRole: req.user.role,
+        attemptedPatientId: id
+      });
+      return res.status(403).json({ error: 'Unauthorized to delete profile' });
+    }
+    
+    // Start a transaction for clean deletion of all related data
+    await prisma.$transaction(async (prisma) => {
+      // 1. Get the patient email to find the user record
+      const patient = await prisma.patientProfile.findUnique({
+        where: { id }
+      });
+      
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient profile not found' });
+      }
+      
+      // 2. Delete all appointments
+      const deletedAppointments = await prisma.appointment.deleteMany({
+        where: { patientId: id }
+      });
+      logger.info(`Deleted ${deletedAppointments.count} appointments for patient ID: ${id}`);
+      
+      // 3. Delete all feedback
+      const deletedFeedback = await prisma.feedback.deleteMany({
+        where: { patientId: id }
+      });
+      logger.info(`Deleted ${deletedFeedback.count} feedback entries for patient ID: ${id}`);
+      
+      // 4. Find and invalidate all sessions for the user
+      const user = await prisma.user.findUnique({
+        where: { email: patient.email }
+      });
+      
+      if (user) {
+        const deletedSessions = await prisma.session.deleteMany({
+          where: { userId: user.id }
+        });
+        logger.info(`Deleted ${deletedSessions.count} sessions for user ID: ${user.id}`);
+        
+        // 5. Delete the user record
+        await prisma.user.delete({
+          where: { id: user.id }
+        });
+        logger.info(`Deleted user record for user ID: ${user.id}`);
+      }
+      
+      // 6. Finally delete the patient profile
+      await prisma.patientProfile.delete({
+        where: { id }
+      });
+      logger.info(`Successfully deleted profile for patient ID: ${id}`);
+    });
+    
+    // Also invalidate the current session token
+    if (req.token) {
+      await invalidateSession(req.token);
+      logger.info(`Invalidated current session token for patient ID: ${id}`);
+    }
+    
+    res.status(200).json({ 
+      success: true,
+      message: 'Profile and all related data deleted successfully',
+      redirect: '/' // Frontend should redirect to home page
+    });
+  } catch (err) {
+    logger.error(`Error deleting patient profile`, {
+      patientId: req.params.id,
       error: err.message,
       stack: err.stack
     });

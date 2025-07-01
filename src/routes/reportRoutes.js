@@ -7,12 +7,13 @@ const {
   updateReport,
   deleteReport
 } = require('../controllers/reportController');
+const { uploadReportFile } = require('../utils/fileUploadUtil');
 
 // Report routes
-router.post('/', uploadReport);
+router.post('/', uploadReportFile('reportFile'), uploadReport);
 router.get('/', getReports);
 router.get('/:id', getReportById);
-router.put('/:id', updateReport);
+router.put('/:id', uploadReportFile('reportFile'), updateReport);
 router.delete('/:id', deleteReport);
 
 module.exports = router;
