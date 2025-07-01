@@ -1,46 +1,470 @@
 /* Styles for MakeAppointment component */
-.make-appointment h2 {
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1px;
-    background: #ccc;
-  }
-  .grid-header {
-    background: #f0f0f0;
-    text-align: center;
-    padding: 0.5rem;
-    font-weight: bold;
-  }
-  .slot-header {
-    background: #e8e8e8;
-  }
-  .slot {
-    background: #fff;
-    height: 50px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .slot.selected {
-    background: #1e90ff;
-    color: #fff;
-  }
-  .btn-primary {
-    margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    background: #1e90ff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
+.update-slots-page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* White box container similar to upload report */
+.appointment-form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  margin-bottom: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-header h2 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.refresh-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.refresh-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.admin-note {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.slot-count-indicator {
+  margin-left: 10px;
+  font-weight: bold;
+  color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.slot-limit-notice {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border-left: 4px solid #ffc107;
+}
+
+.payment-method-section {
+  margin-top: 25px;
+  padding: 22px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.payment-method-section h4 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #343a40;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 10px;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  padding: 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.payment-option:hover {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.payment-option.selected {
+  border-color: #0d6efd;
+  background-color: #e7f1ff;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+}
+
+.radio-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #adb5bd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.payment-option.selected .radio-button {
+  border-color: #0d6efd;
+}
+
+.radio-inner {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2);
+}
+
+.payment-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-title {
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 6px;
+  font-size: 1.05rem;
+}
+
+.payment-description {
+  font-size: 0.9rem;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.payment-selection-notice {
+  margin-top: 15px;
+  color: #dc3545;
+  font-size: 0.95rem;
+  text-align: center;
+  background-color: rgba(220, 53, 69, 0.1);
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.no-slots {
+  padding: 30px;
+  text-align: center;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  margin: 20px 0;
+  color: #6c757d;
+}
+
+/* Grid styles */
+.grid-container {
+  display: grid;
+  grid-template-columns: 120px repeat(3, 1fr); /* Fixed: 1 time column + 3 date columns */
+  margin: 30px 0;
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x: auto;
+  max-height: 70vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+:root {
+  --num-dates: 3; /* Patient booking shows 3 dates */
+}
+
+.grid-header {
+  text-align: center;
+  padding: 12px 8px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.slot-header {
+  background: #cbd5e1;
+}
+
+.slot-cell {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+/* Style for the time column */
+.slot-cell:first-child {
+  background: #f8f9fa;
+  font-weight: 500;
+  cursor: default;
+}
+
+/* Add zebra striping for rows */
+.grid-container > *:nth-child(odd) {
+  background: #f8f9fa;
+}
+
+.grid-container > .slot-cell:nth-child(odd):first-child {
+  background: #f2f2f2;
+}
+
+.slot-cell:hover:not(.reserved):not(:first-child) {
+  background: #e9ecef;
+}
+
+.slot-cell.selected {
+  background: #e3f2fd !important;
+  color: #0d6efd;
+  border: 2px solid #0d6efd;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.3);
+  transform: scale(1.02);
+  z-index: 1;
+}
+
+.slot-cell.reserved {
+  position: relative;
+  background: #f8f9fa !important;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.slot-cell.my-appointment {
+  background: #e6f7ff !important;
+  border: 2px solid #1890ff;
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.slot-cell.unavailable {
+  background: #f5f5f5 !important;
+  color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.slot-cell.same-day-disabled {
+  background: #fff3cd !important; /* Light yellow background */
+  color: #856404; /* Dark yellow text */
+  cursor: not-allowed;
+  opacity: 0.7;
+  border: 1px solid #ffeaa7; /* Yellow border */
+  position: relative;
+}
+
+.slot-cell.same-day-disabled:hover {
+  background: #fff3cd !important; /* Keep same background on hover */
+  transform: none; /* Disable hover transform */
+}
+
+.info-message {
+  background-color: #e7f5ff;
+  border-left: 4px solid #1890ff;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  border-radius: 6px;
+  color: #0c5460;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.error-message {
+  background-color: #fff5f5;
+  border-left: 4px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  color: #cf1322;
+}
+
+.no-slots-message {
+  background-color: #fffbe6;
+  border-left: 4px solid #faad14;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  color: #874d00;
+}
+
+/* Disabled payment method section */
+.payment-method-section.disabled {
+  opacity: 0.7;
+  background-color: #f1f1f1;
+}
+
+.payment-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.selected-slot-info {
+  background-color: #e8f4ff;
+  padding: 15px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #b8daff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.selected-slot-info p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0056b3;
+  font-weight: 500;
+}
+
+.selected-slots {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.selected-slots h3 {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #343a40;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 10px;
+}
+
+.selected-slots ul {
+  list-style: none;
+  padding: 0;
+}
+
+.selected-slots li {
+  padding: 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.actions {
+  margin-top: 30px;
+  text-align: right;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.save-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+.save-button:hover:not(:disabled) {
+  background: #0069d9;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.save-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}

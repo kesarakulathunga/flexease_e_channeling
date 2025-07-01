@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { patientService } from '../../../services';
+import { useAuth } from '../../../context/AuthContext';
 import emailIcon from '../../../assets/envelop.svg';
 import './EditProfileEmail.css';
-import PatientSidebar from '../../../components/Sidebar/Sidebar';
 
 export default function EditProfileEmail() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { currentProfile, setProfile } = useAuth();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -38,25 +41,24 @@ export default function EditProfileEmail() {
   const startResendTimer = () => {
     setResendTimer(60);
   };
-
   const handleSendOtp = async (isResend = false) => {
     setError('');
     setIsSending(true);
     try {
-      // TODO: Call backend to send OTP to email
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call API to send OTP to email
+      const response = await patientService.sendEmailVerification(email);
+      console.log('OTP send response:', response);
       setOtpSent(true);
       startResendTimer();
       setOtp('');
     } catch (err) {
-      setError('Failed to send OTP. Please try again.');
+      console.error('Error sending OTP:', err);
+      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
       setOtpSent(false);
     } finally {
       setIsSending(false);
     }
-  };
-
-  const handleVerifyOtp = async () => {
+  };  const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       setError('Please enter a valid 6-digit OTP.');
       return;
@@ -64,11 +66,30 @@ export default function EditProfileEmail() {
     setError('');
     setIsVerifying(true);
     try {
-      // TODO: Call backend to verify OTP and update email
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call backend to verify OTP and update email
+      // We're now passing the OTP as 'otpCode' parameter which will be sent as 'code' to match backend expectation
+      const response = await patientService.updateEmail(email, otp);
+      console.log('Email update response:', response);
+      
+      // Update profile in context and localStorage
+      if (currentProfile && response) {
+        const updatedProfile = {
+          ...currentProfile,
+          email: email
+        };
+        setProfile(updatedProfile);
+        localStorage.setItem('currentProfile', JSON.stringify(updatedProfile));
+      }
+      
       setSuccess(true);
+      
+      // Redirect to dashboard after 2 seconds
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     } catch (err) {
-      setError('Invalid OTP or verification failed. Please try again.');
+      console.error('Error verifying OTP:', err);
+      setError(err.response?.data?.message || 'Invalid OTP or verification failed. Please try again.');
     } finally {
       setIsVerifying(false);
     }
@@ -93,11 +114,11 @@ export default function EditProfileEmail() {
           <div className={`step ${!otpSent ? 'active' : ''}`}>Email</div>
           <div className="divider" />
           <div className={`step ${otpSent ? 'active' : ''}`}>OTP</div>
-        </div>
-        {success ? (
+        </div>        {success ? (
           <>
             <h2>Email Verified!</h2>
             <p>Your new email address has been verified and updated successfully.</p>
+            <p className="redirect-message">Redirecting to dashboard...</p>
           </>
         ) : !otpSent ? (
           <>

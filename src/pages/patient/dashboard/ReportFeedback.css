@@ -1,0 +1,286 @@
+/* Styles for the ReportFeedback page */
+.report-feedback-page {
+  padding: 20px;
+  max-width: 850px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 85px; /* Add padding for the TopBar */
+}
+
+.back-navigation {
+  margin-bottom: 20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #0078d7;
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  color: #005a9e;
+  text-decoration: underline;
+}
+
+/* Medical Report Styling */
+.medical-report-container {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.medical-report-header {
+  background: linear-gradient(135deg, #4775a6, #4285f4);
+  color: white;
+  padding: 60px 30px 120px;
+  position: relative;
+  overflow: hidden;
+  height: 220px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.report-header-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  position: relative;
+  z-index: 5;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.medical-report-wave {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background-color: white;
+  border-radius: 100% 100% 0 0 / 100% 100% 0 0;
+  z-index: 1;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.medical-report-body {
+  padding: 30px 25px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%);
+}
+
+.report-title {
+  color: #333;
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Patient Details Section */
+.patient-details-section {
+  background-color: #f8fafd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e1e7ef;
+}
+
+.patient-details-section h3 {
+  color: #4775a6;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #e1e7ef;
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+.patient-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.patient-detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #5f6368;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #3c4043;
+}
+
+.report-meta-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #f8fafd;
+  border: 1px solid #e1e7ef;
+}
+
+.report-document-info {
+  flex: 1;
+}
+
+.upload-date, .filename {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.report-id {
+  font-size: 14px;
+  color: #777;
+  text-align: right;
+}
+
+.report-feedback-section {
+  margin-top: 25px;
+}
+
+.feedback-section-title {
+  color: #405470;
+  font-size: 20px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.feedback-section-subtitle {
+  color: #666;
+  font-size: 15px;
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.feedback-display-wrapper {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.medical-report-footer {
+  background-color: #f0f5fa;
+  padding: 15px 25px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.clinic-details {
+  text-align: center;
+}
+
+.clinic-name {
+  font-weight: 600;
+  color: #405470;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.clinic-phone, .clinic-location {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Loading and Error States */
+.medical-report-loading, .medical-report-error {
+  background-color: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.medical-report-loading {
+  color: #4775a6;
+  font-weight: 500;
+}
+
+.medical-report-error {
+  color: #dc3545;
+  background-color: #fff5f5;
+  border: 1px solid #ffe0e0;
+}
+
+/* Download PDF Button */
+.download-pdf-btn {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.08);
+}
+
+.download-pdf-btn:hover {
+  background: #1558b0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .report-meta-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .report-id {
+    text-align: left;
+  }
+
+  .patient-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-feedback-page {
+    padding: 10px;
+  }
+
+  .medical-report-container {
+    border-radius: 8px;
+  }
+
+  .medical-report-header {
+    height: 100px;
+  }
+
+  .report-header-title {
+    font-size: 20px;
+  }
+}

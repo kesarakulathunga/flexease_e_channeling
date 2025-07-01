@@ -1,0 +1,421 @@
+/* src/pages/patient/verify-details/ViewProfileCheck.css */
+/* Higher specificity selector for the verify page */
+#view-profile-page,
+html body #view-profile-page.verify-page,
+body #view-profile-page.verify-page,
+html body .verify-page,
+body .verify-page,
+.verify-page {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: 'Poppins', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  position: relative !important;
+  background-color: #f5f7fa !important;
+}
+
+/* Add background image directly to this component with higher specificity */
+#view-profile-page::before,
+html body #view-profile-page.verify-page::before,
+body #view-profile-page.verify-page::before,
+html body .verify-page::before,
+body .verify-page::before,
+.verify-page::before {
+  content: "" !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg,
+    rgba(245, 247, 250, 0.92),
+    rgba(235, 240, 250, 0.88),
+    rgba(230, 240, 255, 0.9),
+    rgba(240, 245, 255, 0.85)
+  ) !important;
+  background-size: 400% 400% !important;
+  z-index: -2 !important;
+  animation: gradient-shift 15s ease infinite !important;
+}
+
+#view-profile-page::after,
+html body #view-profile-page.verify-page::after,
+body #view-profile-page.verify-page::after,
+html body .verify-page::after,
+body .verify-page::after,
+.verify-page::after {
+  content: "" !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image: url('../../../assets/physio-illustration.png') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  opacity: 0.4 !important;
+  z-index: -1 !important;
+  animation: gentle-pulse 8s infinite alternate ease-in-out !important;
+}
+
+/* Animations for the background */
+@keyframes gentle-pulse {
+  0% {
+    opacity: 0.35;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.verify-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.verify-card h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #7276F7;
+}
+
+.verify-card p {
+  color: #666;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.profile-subtitle {
+  margin-bottom: 0.5rem !important;
+  color: #555;
+}
+
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.step {
+  color: #999;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.step.active {
+  color: #4a90e2;
+}
+
+.divider {
+  flex-grow: 1;
+  height: 2px;
+  background: #eee;
+  margin: 0 12px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #999;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px 12px 44px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+/* Message container for errors and notifications */
+.message-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+  padding: 0;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(231, 76, 60, 0.05);
+  text-align: center;
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  width: 100%;
+}
+
+/* Secondary actions container */
+.secondary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-2px, 0, 0); }
+  40%, 60% { transform: translate3d(2px, 0, 0); }
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #4e54c8, #8f94fb);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(78, 84, 200, 0.3);
+  margin-bottom: 0.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(78, 84, 200, 0.4);
+}
+
+.btn-primary:hover:not(:disabled):before {
+  left: 100%;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  background: linear-gradient(45deg, #a0a0a0, #c5c5c5);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #4e54c8;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  display: block;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.btn-link:hover:not(:disabled) {
+  background: rgba(78, 84, 200, 0.08);
+  color: #3a3fc0;
+}
+
+.btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Secondary button style */
+.btn-secondary {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #2ecc71, #27ae60);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+  margin-bottom: 0.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-secondary:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(46, 204, 113, 0.4);
+}
+
+.btn-secondary:hover:not(:disabled):before {
+  left: 100%;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.7;
+  background: linear-gradient(45deg, #a0a0a0, #c5c5c5);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Profile select button - smaller version of primary button */
+.profile-select-btn {
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.profile-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.profile-list.compact {
+  margin-top: 0.25rem;
+}
+
+.profile-item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.profile-item:hover {
+  border-color: #4e54c8;
+  background-color: #f8f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.profile-item:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.profile-select-arrow {
+  font-size: 1.5rem;
+  color: #4e54c8;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .verify-card {
+    padding: 20px 16px;
+    max-height: 85vh;
+    gap: 0.5rem;
+  }
+
+  .profile-subtitle {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .profile-item {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+
+  .profile-name {
+    font-size: 1rem;
+  }
+
+  .verify-card h2 {
+    font-size: 20px;
+  }
+
+  .verify-card p {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .secondary-actions {
+    gap: 0.25rem;
+  }
+
+  .btn-secondary, .btn-primary {
+    padding: 0.6rem;
+  }
+}

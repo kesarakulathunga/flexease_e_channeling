@@ -1,21 +1,25 @@
+// src/pages/patient/EmailVerification/VerifyEmail.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { authService } from '../../../services';
+import { useAuth } from '../../../context/AuthContext';
 import emailIcon from '../../../assets/envelop.svg';
+import physioIllustration from '../../../assets/physio-illustration.png';
 import './VerifyEmail.css';
 
 export default function VerifyEmail() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState(''); // State for OTP input
   const [error, setError] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false); // State for OTP verification
-  const [otpSent, setOtpSent] = useState(false); // State to track if OTP has been sent
   const [resendTimer, setResendTimer] = useState(0); // Timer for resend button
-  const [step, setStep] = useState('otp'); // 'otp', 'select', 'new'
-  const [accounts, setAccounts] = useState([]);
-  const [newAccount, setNewAccount] = useState({ name: '', age: '', phone: '' });
+  const [profiles, setProfiles] = useState([]); // Available profiles after verification
+  // Three possible steps: 'email', 'otp', 'select'
+  const [step, setStep] = useState('email');
 
   // Timer effect for resend OTP
   useEffect(() => {
@@ -34,9 +38,9 @@ export default function VerifyEmail() {
     setResendTimer(60); // Start a 60-second timer
   };
 
-  const handleSendOtp = async (isResend = false) => {
+  const handleCheckEmail = async (isResend = false) => {
     if (!isResend) {
-      // basic email format check only on initial send
+      // Basic email format validation on initial send
       if (!/\S+@\S+\.\S+/.test(email)) {
         setError('Please enter a valid email address.');
         return;
@@ -45,32 +49,30 @@ export default function VerifyEmail() {
     setError('');
     setIsSending(true);
     try {
-      // TODO: call your backend: await otpService.send(email);
-      console.log(`Simulating OTP ${isResend ? 'resend' : 'send'} to ${email}`);
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Step 1: Check email and send OTP
+      await authService.checkEmail(email, isResend);
 
-      setOtpSent(true); // Mark OTP as sent to show OTP input
       startResendTimer(); // Start the resend timer
-      if (!isResend) {
-        // Don't navigate, just show OTP section
+      setStep('otp'); // Move to OTP step
+        if (!isResend) {
         console.log("OTP Sent, showing OTP input section.");
       } else {
-         console.log("OTP Resent.");
+        console.log("OTP Resent.");
       }
       // Clear previous OTP input on send/resend
       setOtp('');
-
     } catch (err) {
-      console.error("OTP Send Error:", err);
-      setError(`Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
-      setOtpSent(false); // Stay on email input if initial send fails
+      console.error("Email check error:", err);
+      if (err.message && err.message.includes('Network Error')) {
+        setError(`Connection to server failed. Please ensure the backend server is running.`);
+      } else {
+        setError(`Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
+      }
     } finally {
       setIsSending(false);
     }
   };
-
-  const handleVerifyOtp = async () => {
+    const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       setError('Please enter a valid 6-digit OTP.');
       return;
@@ -78,91 +80,144 @@ export default function VerifyEmail() {
     setError('');
     setIsVerifying(true);
     try {
-      // TODO: call your backend: await otpService.verify(email, otp);
-      console.log(`Simulating OTP verification for ${email} with OTP ${otp}`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Step 2: Verify OTP with backend
+      const response = await authService.verifyOTP(email, otp);
 
-      // After OTP verification, check for existing accounts
-      // TODO: Replace with real API call:
-      // const res = await fetch(`/api/patient/accounts?email=${email}`);
-      // const data = await res.json();
-      const data = [];
-      // Simulate: [] for no accounts, or [{id, name, age}] for existing
-      if (data.length > 0) {
-        setAccounts(data);
-        setStep('select');
+      // Store user data in context after successful verification
+      if (response.user) {
+        await login(response.user, false); // Set as patient (not admin)
       } else {
-        setStep('new');
+        // If no user data, create a basic user object with the email
+        await login({ email }, false);
+      }
+
+      // Check for patient profiles in the response
+      // The backend might return 'profiles' or 'patients' array
+      const patientProfiles = response.profiles || response.patients || [];
+      const hasExistingAccounts = response.hasExistingAccounts || patientProfiles.length > 0;
+
+      if (hasExistingAccounts && patientProfiles.length > 0) {
+        // Make sure each profile has an id field
+        const processedProfiles = patientProfiles.map(profile => ({
+          ...profile,
+          id: profile.id || profile._id || profile.patientId
+        }));
+        setProfiles(processedProfiles);
+        setStep('select'); // Move to profile selection step
+      } else {
+        // No profiles found, redirect to registration form
+        navigate('/patient-details-form', {
+          state: { email, verified: true }
+        });
       }
     } catch (err) {
+      console.error('Verification error:', err);
       setError('Invalid OTP or verification failed. Please try again.');
     } finally {
       setIsVerifying(false);
     }
+  };  const handleSelectAccount = async (profileId) => {
+    try {
+      console.log(`Attempting to select profile with ID: ${profileId}`);
+
+      // Step 3: Select an existing profile with proper error handling
+      const response = await authService.selectAccount(profileId);
+      console.log('Profile selection response:', response);
+
+      // Get the profile from the response
+      const profile = response.profile || response.patient;
+
+      if (profile) {
+        // Ensure user role is set in localStorage
+        localStorage.setItem('userRole', 'PATIENT');
+
+        // Log the localStorage state
+        console.log('Post-selection localStorage state:', {
+          authToken: localStorage.getItem('authToken') ? 'Token exists' : 'No token',
+          user: localStorage.getItem('user') ? 'User exists' : 'No user',
+          currentProfile: localStorage.getItem('currentProfile') ? 'Profile exists' : 'No profile',
+          userRole: localStorage.getItem('userRole')
+        });
+
+        // Navigate to dashboard after successful profile selection
+        navigate('/dashboard');
+      } else {
+        setError('Failed to select account. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error selecting account:', error);
+
+      // More detailed error message based on the error type
+      if (error.response && error.response.status === 404) {
+        setError('The profile selection endpoint was not found. Please contact support.');
+      } else if (error.response && error.response.status === 400) {
+        setError('Invalid profile data. Please try again or create a new profile.');
+      } else {
+        setError('Failed to select account. Please try again.');
+      }
+    }
   };
 
-  const handleSelectAccount = async (accountId) => {
-    // TODO: Optionally notify backend of account selection
-    // await fetch('/api/patient/select-account', { method: 'POST', body: JSON.stringify({ accountId }) });
-    navigate('/dashboard'); // Or appointment page
-  };
-
-  const handleCreateAccount = async (e) => {
-    e.preventDefault();
-    // Validation
-    const nameParts = newAccount.name.trim().split(/\s+/);
-    if (nameParts.length < 2) {
-      setError('Full name must have at least two parts.');
-      return;
-    }
-    const ageNum = parseInt(newAccount.age, 10);
-    if (!(ageNum >= 6 && ageNum <= 100)) {
-      setError('Age must be between 6 and 100 years.');
-      return;
-    }
-    // Phone validation: must be 9 digits, only numbers
-    const phone = newAccount.phone.replace(/\D/g, '');
-    if (phone.length !== 9) {
-      setError('Phone number must have exactly 9 digits (excluding +94).');
-      return;
-    }
-    setError('');
-    // TODO: Call backend to create new account
-    // await fetch('/api/patient/create', { method: 'POST', body: JSON.stringify({ ...newAccount, email }) });
-    navigate('/dashboard'); // Or appointment page
+  const handleCreateNew = () => {
+    // Navigate to patient details form for creating a new profile
+    navigate('/patient-details-form', {
+      state: { email, verified: true }
+    });
   };
 
   const handleBackToEmail = () => {
-    setOtpSent(false);
-    setEmail(''); // Optionally clear email
+    setStep('email');
     setOtp('');
     setError('');
     setResendTimer(0); // Reset timer
   };
 
   useEffect(() => {
+    // Pre-fill email if provided via location state
     if (location.state && location.state.email) {
       setEmail(location.state.email);
     }
   }, [location.state]);
 
+  // Define inline styles for the background
+  const pageStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: '#f5f7fa',
+    backgroundImage: `url(${physioIllustration})`,
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundBlendMode: 'soft-light',
+    opacity: 0.95,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '2rem',
+    fontFamily: "'Poppins', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif"
+  };
+
   return (
-    <div className="verify-page">
+    <div className="verify-page" style={pageStyle}>
       <div className="verify-card">
         {/* Progress indicator */}
         <div className="progress">
-          <div className={`step ${!otpSent ? 'active' : ''}`}>Email</div>
+          <div className={`step ${step === 'email' ? 'active' : ''}`}>Email</div>
           <div className="divider" />
-          <div className={`step ${otpSent ? 'active' : ''}`}>OTP</div>
+          <div className={`step ${step === 'otp' ? 'active' : ''}`}>OTP</div>
           <div className="divider" />
-          <div className="step">Details</div>
+          <div className={`step ${step === 'select' ? 'active' : ''}`}>Account</div>
         </div>
 
-        {step === 'otp' && !otpSent ? (
+        {step === 'email' ? (
           <>
             {/* Header */}
             <h2>Step 1: Verify Your Email</h2>
-            <p>We’ll send a one‑time code to confirm your address.</p>
+            <p>We'll send a one‑time code to confirm your address.</p>
 
             {/* Email input */}
             <div className="input-group">
@@ -181,7 +236,7 @@ export default function VerifyEmail() {
             {/* Primary action */}
             <button
               className="btn-primary"
-              onClick={() => handleSendOtp(false)}
+              onClick={() => handleCheckEmail(false)}
               disabled={isSending || !email}
             >
               {isSending ? 'Sending…' : 'Send OTP'}
@@ -196,7 +251,7 @@ export default function VerifyEmail() {
               Clear Email
             </button>
           </>
-        ) : step === 'otp' && otpSent ? (
+        ) : step === 'otp' ? (
           <>
             {/* Header */}
             <h2>Step 2: Enter OTP</h2>
@@ -204,16 +259,15 @@ export default function VerifyEmail() {
 
             {/* OTP input */}
             <div className="input-group">
-              {/* Consider adding an icon for OTP */}
               <input
-                type="text" // Use text for easier input on mobile, consider "tel" or "number" with pattern
-                inputMode="numeric" // Hint for numeric keyboard
-                pattern="\d{6}" // Pattern for validation (optional)
-                maxLength="6" // Limit input length
+                type="text"
+                inputMode="numeric"
+                pattern="\d{6}"
+                maxLength="6"
                 placeholder="Enter 6-digit OTP"
                 value={otp}
-                onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))} // Allow only digits
-                disabled={isVerifying || isSending} // Disable while verifying or resending
+                onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                disabled={isVerifying || isSending}
                 aria-label="One-Time Password"
               />
             </div>
@@ -232,12 +286,11 @@ export default function VerifyEmail() {
             <div className="verify-actions">
                  <button
                     className="btn-link"
-                    onClick={() => handleSendOtp(true)} // Call handleSendOtp with resend flag
+                    onClick={() => handleCheckEmail(true)}
                     disabled={isSending || isVerifying || resendTimer > 0}
                  >
                     {isSending ? 'Resending...' : (resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP')}
                  </button>
-                 {/* Moved Change Email button here */}
                  <button
                     className="btn-link"
                     onClick={handleBackToEmail}
@@ -249,76 +302,31 @@ export default function VerifyEmail() {
           </>
         ) : step === 'select' ? (
           <>
-            <h2>Select Account</h2>
+            <h2>Step 3: Select Account</h2>
             <p>You have the following accounts under <strong>{email}</strong>:</p>
-            <ul>
-              {accounts.map(acc => (
-                <li key={acc.id}>
-                  <button onClick={() => handleSelectAccount(acc.id)}>
-                    {acc.name} (Age: {acc.age})
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <button onClick={() => setStep('new')}>Create New Account</button>
-          </>
-        ) : step === 'new' ? (
-          <>
-            <h2>Create New Account</h2>
+
             {error && <div className="error">{error}</div>}
-            <form className="create-account-form" onSubmit={handleCreateAccount}>
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={newAccount.name}
-                onChange={e => setNewAccount({ ...newAccount, name: e.target.value })}
-                required
-              />
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="Age (years)"
-                  value={newAccount.age}
-                  onChange={e => setNewAccount({ ...newAccount, age: e.target.value.replace(/\D/g, '') })}
-                  required
-                  style={{ width: '100%' }}
-                />
-                {error && error.toLowerCase().includes('age') && (
-                  <div className="error" style={{ position: 'absolute', left: 0, top: '100%' }}>
-                    {error}
+
+            <div className="profile-list">
+              {profiles.map(profile => (
+                <div key={profile.id} className="profile-item">
+                  <div className="profile-info">
+                    <strong>{profile.name}</strong>, {profile.age} yrs
+                    {profile.nic && <span><br/>NIC: {profile.nic}</span>}
                   </div>
-                )}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{
-                  background: '#f0f0f0',
-                  border: '1px solid #cce0f7',
-                  borderRadius: '4px 0 0 4px',
-                  padding: '0.75rem 0.75rem',
-                  fontSize: '1rem',
-                  color: '#555',
-                  borderRight: 'none'
-                }}>+94</span>
-                <input
-                  type="text"
-                  placeholder="Phone (9 digits)"
-                  value={newAccount.phone}
-                  onChange={e => {
-                    // Only allow numbers, max 9 digits
-                    const val = e.target.value.replace(/\D/g, '').slice(0, 9);
-                    setNewAccount({ ...newAccount, phone: val });
-                  }}
-                  required
-                  maxLength={9}
-                  style={{
-                    borderRadius: '0 4px 4px 0',
-                    borderLeft: 'none',
-                    flex: 1
-                  }}
-                />
-              </div>
-              <button type="submit">Create Account</button>
-            </form>
+                  <button
+                    className="btn-primary"
+                    onClick={() => handleSelectAccount(profile.id)}
+                  >
+                    Use This Profile
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button className="btn-outline" onClick={handleCreateNew}>
+              Create New Profile
+            </button>
           </>
         ) : null}
       </div>

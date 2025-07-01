@@ -1,0 +1,129 @@
+/* src/pages/patient/dashboard/PatientProfileDeletion.css */
+
+.danger-zone {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.danger-zone h3 {
+  color: #d32f2f;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+}
+
+.danger-zone p {
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.delete-button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #b71c1c;
+}
+
+.confirm-dialog {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  background-color: #ffebee;
+}
+
+.confirm-dialog h4 {
+  color: #d32f2f;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.confirm-dialog p {
+  margin-bottom: 16px;
+}
+
+.confirm-dialog input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dialog-actions button {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.dialog-actions button:first-child {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.confirm-delete-button {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.confirm-delete-button:disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+/* Status and progress bar styles */
+.status-container {
+  margin-bottom: 16px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.status-message {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.progress-bar-container {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}

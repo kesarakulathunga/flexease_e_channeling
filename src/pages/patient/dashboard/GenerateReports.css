@@ -1,0 +1,213 @@
+.generate-reports {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.generate-reports h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Form Styles */
+.metrics-form {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-group select {
+  background-color: white;
+  cursor: pointer;
+}
+
+.input-hint {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.generate-btn,
+.back-btn,
+.view-reports-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  width: 100%; /* Ensure all buttons take full width on smaller screens */
+}
+
+.generate-btn:hover,
+.back-btn:hover,
+.view-reports-btn:hover {
+  background-color: #2980b9;
+}
+
+.generate-btn:disabled,
+.back-btn:disabled,
+.view-reports-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Results Styles */
+.report-results {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.report-results h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.metric-card {
+  background-color: white;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.metric-card h4 {
+  color: #3498db;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 18px;
+  color: #3498db;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.metric-description {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .generate-reports {
+    padding: 15px;
+  }
+  
+  .metric-value {
+    font-size: 20px;
+  }
+}
+
+.appt-table {
+  width:100%; border-collapse:collapse; margin-bottom:2rem;
+}
+
+.appt-table th, .appt-table td {
+  border:1px solid #ddd; padding:.75rem; text-align:left;
+}
+
+.appt-table th {
+  background:#f7f7f7; font-weight:500;
+}
+
+.btn-link {
+  background:none; border:none; color:#1e90ff; cursor:pointer;
+}
+
+.btn-link:disabled {
+  color:#ccc; cursor:not-allowed;
+}
+
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.report-actions button {
+  flex-basis: calc(33.333% - 10px); /* Adjust for 3 buttons with gap */
+  min-width: 150px; /* Minimum width for buttons */
+}
+
+.view-reports-btn {
+  background-color: #27ae60; /* Specific color for view reports button */
+}
+
+.view-reports-btn:hover {
+  background-color: #219653; /* Specific hover color for view reports button */
+}
+
+@media (min-width: 768px) {
+  .report-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .generate-btn,
+  .back-btn,
+  .view-reports-btn {
+    width: auto; /* Allow buttons to size based on content on larger screens */
+  }
+}
+
+/* Ensure the purple button also adheres to the sizing */
+.report-actions button[style*="background-color: #8e44ad"] {
+    background-color: #8e44ad !important; /* Keep purple color */
+}
+
+.report-actions button[style*="background-color: #8e44ad"]:hover {
+    background-color: #732d91 !important; /* Darker purple on hover */
+}

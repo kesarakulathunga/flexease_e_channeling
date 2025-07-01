@@ -26,11 +26,9 @@ export default function Navbar() {
       {/* Centered welcome text */}
       <div className="navbar__title">
         Welcome to Flexease Physiotherapy Center
-      </div>
-
-      {/* Admin Login Button */}
+      </div>      {/* Admin Login Button */}
       <nav className="navbar__menu">
-        <button className="navbar__admin-login-button" onClick={handleAdminLoginClick}>Admin Login</button>
+        <button className="navbar__admin-button" onClick={handleAdminLoginClick}>Admin Login</button>
       </nav>
     </header>
   );

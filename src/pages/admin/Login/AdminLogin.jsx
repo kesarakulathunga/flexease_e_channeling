@@ -1,24 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import envelopIcon from '../../../assets/envelop.svg'; // Changed from email.svg
+import { useAuth } from '../../../context/AuthContext';
+import { authService } from '../../../services';
+import envelopIcon from '../../../assets/envelop.svg';
 import './AdminLogin.css';
 
-// TODO: replace with real API call
-async function sendAdminOtp(email, isResend = false) {
-  console.log(`${isResend ? 'Resending' : 'Sending'} admin OTP to`, email);
-  return new Promise(res => setTimeout(res, 800));
-}
-
-// TODO: replace with real API call
-async function verifyAdminOtp(email, code) {
-  console.log('Verifying admin OTP', code, 'for', email);
-  // simulate 123456 as valid code - Temporarily bypassed
-  // if (code !== '123456') throw new Error('Invalid OTP');
-  return new Promise(res => setTimeout(res, 800));
-}
-
-export default function AdminVerifyEmail() {
+export default function AdminLogin() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -35,39 +24,34 @@ export default function AdminVerifyEmail() {
     return () => clearTimeout(id);
   }, [resendTimer]);
 
-  const startResendTimer = () => setResendTimer(60);
-
-  const handleSendOtp = async (isResend = false) => {
+  const startResendTimer = () => setResendTimer(60);  const handleSendOtp = async (isResend = false) => {
     if (!isResend) {
       // basic email format
       if (!/\S+@\S+\.\S+/.test(email)) {
         setError('Please enter a valid email address.');
         return;
       }
-      // // pre-check admin - Temporarily disabled
-      // setError('');
-      // const isAdmin = await checkAdminEmail(email);
-      // if (!isAdmin) {
-      //   setError('This email is not registered as an admin.');
-      //   setTimeout(() => navigate('/'), 2000);
-      //   return;
-      // }
     }
 
     setError('');
     setIsSending(true);
     try {
-      await sendAdminOtp(email, isResend);
+      const response = await authService.sendAdminOtp(email, isResend);
       setOtpSent(true);
       startResendTimer();
       setOtp('');
-    } catch {
-      setError(`Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
+      
+      // Show success message from API if available
+      if (response && response.message) {
+        console.log(response.message);
+      }
+    } catch (err) {
+      console.error('Admin OTP send error:', err);
+      setError(err.message || `Failed to ${isResend ? 'resend' : 'send'} OTP. Please try again.`);
     } finally {
       setIsSending(false);
     }
   };
-
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       setError('Please enter a valid 6-digit OTP.');
@@ -76,12 +60,21 @@ export default function AdminVerifyEmail() {
     setError('');
     setIsVerifying(true);
     try {
-      await verifyAdminOtp(email, otp);
-      navigate('/admin/dashboard');
-    } catch {
+      const response = await authService.adminLogin(email, otp);
+      
+      // Login to set authentication state
+      if (response && response.token) {
+        // Use the admin data from the response
+        await login(response.data, true); // true for admin login
+        navigate('/admin/dashboard');
+      } else {
+        throw new Error('Invalid login response from server');
+      }
+    } catch (err) {
+      console.error('Admin verification error:', err);
       const fails = failCount + 1;
       setFailCount(fails);
-      setError('Invalid OTP. Please try again.');
+      setError(err.message || 'Invalid OTP. Please try again.');
       if (fails >= 5) {
         setError('Too many failed attempts. Returning to login.');
         setTimeout(() => navigate('/'), 2000);

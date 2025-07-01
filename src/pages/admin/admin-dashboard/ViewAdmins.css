@@ -1,62 +1,257 @@
 .view-admins-page {
-    max-width: 600px;
-    margin: 0 auto;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.view-admins-page h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.view-admins-page h3 {
+  margin: 1.75rem 0 1.25rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.view-admins-page h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eaeaea;
+  margin-left: 10px;
+}
+
+/* View form */
+.view-admin-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  background: #f9f9f9;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.view-admin-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+.view-admin-form input:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+.view-admin-form button {
+  padding: 0.75rem 1.5rem;
+  background: #1e90ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.view-admin-form button:hover:not(:disabled) {
+  background: #007acc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Messages */
+.error-message {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(211, 47, 47, 0.08);
+  border-left: 4px solid #d32f2f;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.success-message {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(46, 125, 50, 0.08);
+  border-left: 4px solid #2e7d32;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  margin: 1.5rem 0;
+  font-style: italic;
+}
+
+.no-data {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+/* Admin list */
+.admin-list {
+  list-style: none;
+  padding-left: 0;
+}
+.admin-list li {
+  background: #fff;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid #1e90ff;
+}
+
+.admin-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.admin-email {
+  font-weight: 500;
+  color: #333;
+  font-size: 1rem;
+}
+
+.admin-list .remove-button {
+  background: #d32f2f;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.admin-list .remove-button:hover:not(:disabled) {
+  background: #b71c1c;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Disabled state for buttons */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
   }
-  .view-admins-page h2 {
-    margin-bottom: 1rem;
-    color: #333;
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  /* View form */
-  .view-admin-form {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .view-admin-form input {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .view-admin-form button {
-    padding: 0.5rem 1rem;
-    background: #1e90ff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .view-admin-form button:hover {
-    background: #007acc;
-  }
-  
-  .error {
-    color: #e74c3c;
-    margin-bottom: 1rem;
-  }
-  
-  /* Admin list */
-  .admin-list {
-    list-style: none;
-    padding-left: 0;
-  }
-  .admin-list li {
-    background: #fff;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }
-  .admin-list button {
-    background: none;
-    border: none;
-    color: #e74c3c;
-    cursor: pointer;
-  }
-  .admin-list button:hover {
-    text-decoration: underline;
-  }
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  background: #fff3f3;
+}
+
+.modal-body .warning-text {
+  color: #d32f2f;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.modal-body .sub-text {
+  color: #666;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-button {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #bdbdbd;
+}
+
+.delete-button {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #c62828;
+}

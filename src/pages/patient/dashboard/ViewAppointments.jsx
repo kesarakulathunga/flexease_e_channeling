@@ -1,46 +1,75 @@
-import React, { useState } from 'react';
+// src/pages/patient/dashboard/ViewAppointments.jsx
+import React, { useState, useEffect } from 'react';
+import { appointmentService } from '../../../services';
 import './ViewAppointments.css';
 
 export default function ViewAppointments() {
-  const [appointments] = useState([
-    { id:1, date:'2025-04-26', time:'9:00 AM', therapist:'Dr. Smith', status:'Confirmed' },
-    { id:2, date:'2025-05-01', time:'11:00 AM', therapist:'Dr. Lee', status:'Pending' },
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const handleReschedule = id => {
-    // TODO: open reschedule flow
-    alert(`Reschedule appointment ${id}`);
+  useEffect(() => {
+    loadAppointments();
+  }, []);
+
+  const loadAppointments = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await appointmentService.getMyAppointments();
+      setAppointments(response);
+    } catch (err) {
+      console.error('Error loading appointments:', err);
+      setError('Failed to load your appointments. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  if (loading) {
+    return <div className="loading">Loading your appointments...</div>;
+  }
   return (
-    <>
+    <div className="view-appointments">
       <h2>Your Appointments</h2>
-      <table className="appt-table">
-        <thead>
-          <tr>
-            <th>Date</th><th>Time</th><th>Therapist</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.map(a=>(
-            <tr key={a.id}>
-              <td>{a.date}</td>
-              <td>{a.time}</td>
-              <td>{a.therapist}</td>
-              <td>{a.status}</td>
-              <td>
-                <button
-                  className="btn-link"
-                  disabled={false}
-                  onClick={()=>handleReschedule(a.id)}
-                >
-                  Reschedule
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+      
+      {error && <div className="error-message">{error}</div>}
+      
+      {appointments.length === 0 ? (
+        <div className="no-appointments">
+          <p>You don't have any appointments scheduled.</p>
+        </div>
+      ) : (
+          <div className="appointments-list">
+            {appointments.map(appointment => (
+              <div key={appointment.id} className="appointment-card">
+                <div className="appointment-header">
+                  <div className="appointment-date">
+                    {new Date(appointment.date).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </div>
+                  <div className="appointment-time">{appointment.time}</div>
+                </div>
+                
+                {appointment.reason && (
+                  <div className="appointment-reason">
+                    <strong>Reason:</strong> {appointment.reason}
+                  </div>
+                )}
+                
+                <div className="appointment-status">
+                  Status: <span className={appointment.status.toLowerCase()}>
+                    {appointment.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+    </div>
   );
 }

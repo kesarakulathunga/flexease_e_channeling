@@ -4,58 +4,69 @@
   min-height: 100vh;
   width: 100%;
   background: #f0f2f5;
-  padding: 10px;
+  padding: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
 }
 
 /* TopBar styles */
 .topbar {
   position: fixed;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  height: 60px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 65px; /* Increased height */
   background: #fff;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
   z-index: 100;
-  border-radius: 6px;
+  border-radius: 0 0 6px 6px; /* Only round the bottom corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Existing topbar child styles */
 .topbar__left {
   cursor: pointer;
 }
+
 .topbar__logo {
   height: 40px;
 }
+
 .topbar__center {
   flex: 1;
   text-align: center;
 }
+
 .topbar__title {
   text-align: center;
-  font-size: 1.1rem; /* Slightly larger font */
-  font-weight: 600; /* Bolder */
-  color: #2c3e50; /* Darker, muted color */
-  margin: 0 auto; /* Add some margin to help center it visually if space-between pushes it */
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  font-family: Montserrat, Verdana, Geneva, Tahoma, sans-serif;
+  color: #2c3e50;
+  margin: 0 auto;
 }
+
 .topbar__right {
   display: flex;
   align-items: center;
 }
+
 .topbar__contact {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: #333;
 }
+
 .topbar__icon {
   width: 20px;
   height: 20px;
   margin-right: 0.5rem;
 }
+
 .topbar__number {
   font-size: 0.875rem;
 }
@@ -63,55 +74,100 @@
 /* Sidebar styles */
 .admin-sidebar {
   position: fixed;
-  top: 80px; /* topbar height (60px) + gap (10px) + top padding (10px) */
+  top: 75px; /* Adjusted to account for new topbar position */
   left: 10px;
-  width: 250px;
-  bottom: 10px;
+  width: 240px;
+  height: calc(100vh - 85px); /* Adjusted to account for new topbar height */
   background: #fff;
-  padding: 1rem;
-  overflow-y: auto;
+  padding: 1rem 0;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
 }
 
-.admin-sidebar__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.admin-sidebar__link {
+.admin-sidebar a {
   display: flex;
   align-items: center;
+  padding: 12px 1.5rem;
+  color: #2c3e50;
   text-decoration: none;
-  color: #555;
-  padding: 0.75rem;
-  border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  border-left: 3px solid transparent;
 }
 
-.admin-sidebar__link:hover,
-.admin-sidebar__link.active {
-  background: #1e90ff;
-  color: #fff;
+.admin-sidebar a:hover {
+  background: #f8f9fa;
+  border-left-color: #90caf9;
 }
 
-.admin-sidebar__icon {
+.admin-sidebar a.active {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 500;
+  border-left-color: #1976d2;
+}
+
+.admin-sidebar img {
   width: 20px;
   height: 20px;
-  margin-right: 0.75rem;
+  margin-right: 12px;
+}
+
+/* Account Management Section */
+.account-management {
+  border-top: 1px solid #e0e0e0;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.nav-item.danger {
+  color: #d32f2f;
+}
+
+.nav-item.danger:hover {
+  background: #ffebee;
+}
+
+.nav-item.danger.active {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.nav-item.warning {
+  color: #ed6c02;
+}
+
+.nav-item.warning:hover {
+  background: #fff3e0;
+}
+
+.nav-item.warning.active {
+  background: #fff3e0;
+  color: #e65100;
 }
 
 /* Main content area */
-.admin-content {
-  position: fixed;
-  top: 80px; /* Same as sidebar top */
-  left: 270px; /* sidebar width (250px) + gap (10px) + left padding (10px) */
-  right: 10px;
-  bottom: 10px;
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  overflow-y: auto;
+.admin-main {
+  margin-left: 260px;
+  margin-top: 75px; /* Adjusted to account for new topbar position */
+  padding: 20px;
+  min-height: calc(100vh - 95px); /* Adjusted to account for new topbar height */
+  background: #f0f2f5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .admin-sidebar.active {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
 }

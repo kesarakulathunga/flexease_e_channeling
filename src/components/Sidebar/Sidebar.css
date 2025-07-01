@@ -14,13 +14,17 @@
 .sidebar__header {
     margin-bottom: 3.5rem; /* Increased space below header to push nav down */
     text-align: center;
+    padding-bottom: 1rem; /* Add padding at the bottom */
+    border-bottom: 2px solid #e9ecef; /* Add a subtle border */
 }
 
 .sidebar__header h3 {
     margin: 0;
-    font-size: 1.25rem; /* Slightly larger */
-    color: #343a40; /* Darker color */
-    font-weight: 600;
+    font-size: 1.5rem; /* Larger font size for Dashboard */
+    color: #007bff; /* Blue color to match active links */
+    font-weight: 700; /* Bolder text */
+    letter-spacing: 0.5px; /* Slight letter spacing for emphasis */
+    text-transform: uppercase; /* Uppercase for more prominence */
 }
 
 .sidebar__nav {

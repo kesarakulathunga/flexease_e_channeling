@@ -1,47 +1,45 @@
 .logout-page {
-    max-width: 380px; /* Slightly smaller width */
+    max-width: 420px;
     margin: 2rem auto;
     background: #fff;
-    padding: 1.8rem; /* Slightly smaller padding */
-    border-radius: 6px; /* Slightly smaller radius */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 2.2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
 }
-.logout-page h2 { color: #333; margin-bottom: 1rem; }
-.logout-page p { color: #666; margin-bottom: 1.5rem; }
+.logout-page h2 { color: #b30000; margin-bottom: 1rem; }
+.logout-page p { color: #555; margin-bottom: 2rem; }
 .logout-page .actions {
     display: flex;
-    gap: 0.8rem; /* Smaller gap */
+    gap: 1.2rem;
     justify-content: center;
 }
 
 /* --- Common Button Styles for Logout --- */
 .logout-page .actions button {
-    padding: .4rem 0.9rem; /* Consistent padding */
-    border-radius: 3px;
+    padding: .6rem 1.1rem;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9em; /* Consistent font size */
-    border: none; /* Reset border for consistency */
-    min-width: 80px; /* Ensure minimum width */
+    font-weight: bold;
+    border: none;
+    color: #fff;
+    min-width: 90px;
     text-align: center;
 }
 
 /* --- Distinct Logout Button Styles --- */
 .btn-logout-cancel {
-    background: none;
-    border: 1px solid #ff4d4d; /* Red border */
-    color: #ff4d4d;
+    background: #6c757d;
 }
 
 .btn-logout-confirm {
-    background: #ff4d4d; /* Red background */
-    color: #fff;
+    background: #dc3545;
 }
 
 .btn-logout-cancel:hover {
-    background: #ffe6e6;
+    background: #5a6268;
 }
 
 .btn-logout-confirm:hover {
-    background: #cc0000; /* Darker red */
+    background: #c82333;
 }

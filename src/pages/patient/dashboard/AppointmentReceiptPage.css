@@ -1,0 +1,36 @@
+.appointment-receipt-page {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.error-container {
+  max-width: 600px;
+  margin: 100px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.error-container h2 {
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+.loading-container {
+  max-width: 600px;
+  margin: 100px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.loading-container h2 {
+  color: #3498db;
+  margin-bottom: 20px;
+}
