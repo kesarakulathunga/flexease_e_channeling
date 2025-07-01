@@ -1,5 +1,6 @@
 // src/controllers/timeSlotController.js
 const { prisma } = require('../config');
+const logger = require('../utils/logger');
 
 // Helper function to get date for start of day
 const getStartOfDay = (date) => {
@@ -79,37 +80,270 @@ exports.createTimeSlots = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// 2. Get available time slots for a specific day/admin
+// 2. Get available time slots with enhanced support for frontend table display
 exports.getAvailableTimeSlots = async (req, res, next) => {
   try {
-    const { date, adminId } = req.query;
+    // Get query parameters with defaults and type checking
+    let days;
+    try {
+      days = req.query.days ? parseInt(req.query.days, 10) : 5;
+      if (isNaN(days) || days < 1 || days > 60) { // Reasonable limits
+        return res.status(400).json({ 
+          error: 'Invalid days parameter',
+          details: 'Days must be a positive number between 1 and 60',
+          code: 'INVALID_DAYS_PARAMETER'
+        });
+      }
+    } catch (parseError) {
+      return res.status(400).json({ 
+        error: 'Invalid days parameter',
+        details: 'Days must be a valid number',
+        code: 'INVALID_DAYS_FORMAT'
+      });
+    }
     
-    // Build query conditions
-    const where = { isAvailable: true };
+    let adminId;
+    try {
+      adminId = req.query.adminId ? parseInt(req.query.adminId, 10) : undefined;
+      if (req.query.adminId && isNaN(adminId)) {
+        return res.status(400).json({ 
+          error: 'Invalid adminId parameter',
+          details: 'Admin ID must be a valid number',
+          code: 'INVALID_ADMIN_ID_FORMAT'
+        });
+      }
+    } catch (parseError) {
+      return res.status(400).json({ 
+        error: 'Invalid adminId parameter',
+        details: 'Admin ID must be a valid number',
+        code: 'INVALID_ADMIN_ID_FORMAT'
+      });
+    }
     
-    if (date) {
-      const queryDate = new Date(date);
-      where.slotDate = {
-        gte: getStartOfDay(queryDate),
-        lte: getEndOfDay(queryDate)
+    const format = req.query.format || 'table';
+    if (!['table', 'flat'].includes(format)) {
+      return res.status(400).json({ 
+        error: 'Invalid format parameter',
+        details: 'Format must be either "table" or "flat"',
+        code: 'INVALID_FORMAT_PARAMETER'
+      });
+    }
+    
+    // Safely parse the date
+    let startDate;
+    try {
+      startDate = req.query.date ? new Date(req.query.date) : new Date();
+      if (isNaN(startDate.getTime())) {
+        throw new Error('Invalid date');
+      }
+    } catch (error) {
+      return res.status(400).json({ 
+        error: 'Invalid date format',
+        details: 'Please provide a valid date in YYYY-MM-DD format',
+        code: 'INVALID_DATE_FORMAT'
+      });
+    }
+      // Set to start of day
+    startDate = getStartOfDay(startDate);
+    
+    // Calculate end date (start date + days)
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + days - 1); // -1 because we count the start date
+    endDate.setHours(23, 59, 59, 999);
+    
+    logger.info(`Fetching slots from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+    
+    // Query for ALL time slots in date range (both available and unavailable)
+    // We need this to accurately represent the table view where unavailable slots are empty cells
+    let allTimeSlots = [];
+    try {
+      const whereClause = {
+        slotDate: {
+          gte: startDate,
+          lte: endDate
+        }
       };
+      
+      if (adminId) {
+        whereClause.adminId = adminId;
+      }
+      
+      allTimeSlots = await prisma.timeSlot.findMany({
+        where: whereClause,
+        orderBy: [
+          { slotDate: 'asc' },
+          { startTime: 'asc' },
+        ],
+      });
+      
+      logger.info(`Found ${allTimeSlots.length} total slots in date range`);
+    } catch (queryError) {
+      logger.error('Error querying time slots:', queryError);
+      return res.status(500).json({ 
+        error: 'Failed to retrieve time slots',
+        details: queryError.message || 'Database query error',
+        code: 'DATABASE_QUERY_ERROR'
+      });
     }
     
-    if (adminId) {
-      where.adminId = Number(adminId);
+    // Check if we have any data
+    if (!allTimeSlots || !Array.isArray(allTimeSlots)) {
+      logger.warn('No time slots data returned from database');
+      
+      // Return empty structured response instead of error
+      if (format === 'table') {
+        return res.json({
+          totalSlots: 0,
+          availableSlots: 0,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          dateRange: []
+        });
+      } else {
+        return res.json({
+          totalSlots: 0,
+          availableSlots: 0,
+          timeSlots: []
+        });
+      }
     }
     
-    // Get available slots
-    const slots = await prisma.timeSlot.findMany({
-      where,
-      orderBy: [
-        { slotDate: 'asc' },
-        { startTime: 'asc' }
-      ]
+    // Format the response based on preference
+    if (format === 'table') {
+      // First, identify all unique times across all days
+      const allTimes = new Set();
+      const dateColumns = {};
+      
+      // Create date columns and collect unique times
+      for (let i = 0; i < parseInt(days, 10); i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const dateStr = currentDate.toISOString().split('T')[0];
+        
+        dateColumns[dateStr] = {
+          date: dateStr,
+          displayDate: `${new Date(dateStr).toLocaleDateString(undefined, { weekday: 'short' })}, ${new Date(dateStr).toLocaleDateString(undefined, { month: 'short' })} ${new Date(dateStr).getDate()}`,
+          slots: {}
+        };
+      }
+      
+      // Process slots into the structure
+      allTimeSlots.forEach(slot => {
+        const dateStr = slot.slotDate.toISOString().split('T')[0];
+        const timeKey = new Date(slot.slotTime).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).toUpperCase();
+        
+        allTimes.add(timeKey);
+        
+        if (dateColumns[dateStr]) {
+          dateColumns[dateStr].slots[timeKey] = {
+            id: slot.id,
+            isAvailable: slot.isAvailable,
+            adminId: slot.adminId
+          };
+        }
+      });
+      
+      // Sort times
+      const sortedTimes = Array.from(allTimes).sort((a, b) => {
+        const timeA = new Date(`01/01/2000 ${a}`);
+        const timeB = new Date(`01/01/2000 ${b}`);
+        return timeA - timeB;
+      });
+      
+      // Convert to array of dates for the response
+      const dateColumnsArray = Object.values(dateColumns);
+      
+      // Prepare the table format response
+      res.json({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        days: parseInt(days, 10),
+        timeSlots: sortedTimes,
+        dates: dateColumnsArray,
+        format: 'table'
+      });
+    } else if (format === 'grouped') {
+      // Filter for only available slots for the grouped format
+      const availableSlots = allTimeSlots.filter(slot => slot.isAvailable);
+      
+      // Group by date for easier frontend consumption
+      const groupedSlots = {};
+      
+      availableSlots.forEach(slot => {
+        const dateStr = slot.slotDate.toISOString().split('T')[0];
+        
+        if (!groupedSlots[dateStr]) {
+          groupedSlots[dateStr] = [];
+        }
+        
+        groupedSlots[dateStr].push({
+          id: slot.id,
+          adminId: slot.adminId,
+          time: slot.slotTime.toISOString(),
+          formattedTime: new Date(slot.slotTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          isAvailable: slot.isAvailable
+        });
+      });
+      
+      // Add date metadata for the frontend
+      const dateRange = [];
+      for (let i = 0; i < parseInt(days, 10); i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const dateStr = currentDate.toISOString().split('T')[0];
+        
+        dateRange.push({
+          date: dateStr,
+          dayName: new Date(dateStr).toLocaleDateString(undefined, { weekday: 'short' }),
+          dayOfMonth: new Date(dateStr).getDate(),
+          month: new Date(dateStr).toLocaleDateString(undefined, { month: 'short' }),
+          hasSlots: !!groupedSlots[dateStr],
+          slots: groupedSlots[dateStr] || []
+        });
+      }
+      
+      res.json({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        days: parseInt(days, 10),
+        dateRange: dateRange,
+        totalSlots: availableSlots.length,
+        format: 'grouped'
+      });
+    } else {
+      // Filter for only available slots for the flat format
+      const availableSlots = allTimeSlots.filter(slot => slot.isAvailable);
+      
+      // Return flat list
+      res.json({
+        timeSlots: availableSlots.map(slot => ({
+          id: slot.id,
+          adminId: slot.adminId,
+          date: slot.slotDate.toISOString(),
+          time: slot.slotTime.toISOString(),
+          formattedTime: new Date(slot.slotTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          isAvailable: slot.isAvailable
+        })),
+        format: 'flat'
+      });
+    }
+  } catch (err) { 
+    logger.error(`Error fetching available time slots`, {
+      error: err.message,
+      stack: err.stack
     });
-    
-    res.json(slots);
-  } catch (err) { next(err); }
+    next(err); 
+  }
 };
 
 // 3. Get a specific time slot

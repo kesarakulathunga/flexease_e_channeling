@@ -5,8 +5,12 @@ const {
   getAllAdmins,
   getAdminById,
   updateAdmin,
-  deleteAdmin
+  deleteAdmin,
+  getAdminEmails
 } = require('./adminController');
+
+// Admin emails endpoint - this returns only email addresses for admin accounts
+router.get('/emails', getAdminEmails);
 
 // CRUD routes for admin management
 router.post('/', createAdmin);

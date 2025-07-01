@@ -1,151 +1,178 @@
-# FlexEase Healthcare Backend
+# 🏥 Healthcare System Backend
 
-This repository contains the backend API for the FlexEase Healthcare application, which allows patients to book appointments, view and edit their profiles, and access medical reports.
+A comprehensive healthcare management system backend built with Node.js, Express.js, and Prisma ORM.
 
-## Features
+## 🚀 Features
 
-- **User Authentication** with email and OTP verification
-- **Patient Profile Management**
-  - View patient profile information
-  - Update basic profile details (name, age, mobile number)
-  - Change email address with OTP verification
-- **Appointment Booking and Management**
-- **Medical Reports and Feedback**
-- **Admin Dashboard and Management**
+- **User Management**: Patient and Admin profiles with role-based access
+- **Appointment System**: Time slot management and booking system
+- **Report Management**: Medical report upload and review system
+- **Feedback System**: Admin feedback on patient reports
+- **Authentication**: JWT-based authentication with OTP verification
+- **Database**: PostgreSQL with Prisma ORM
+- **File Upload**: Secure file handling for medical reports
 
-## Recent Feature Implementations
+## 🛠️ Tech Stack
 
-### 1. View Your Profile
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT, bcryptjs
+- **File Upload**: Multer
+- **Email**: Nodemailer
+- **Environment**: dotenv
+- **CORS**: Cross-origin resource sharing enabled
 
-We've implemented a feature that allows patients to directly view their profile without going through the appointment booking flow.
+## 📋 Prerequisites
 
-### 2. Edit Your Profile
+- Node.js (v16 or higher)
+- PostgreSQL database
+- npm or yarn package manager
 
-We've added comprehensive profile editing functionality, enabling patients to:
-- Update their basic information (name, age, NIC number, mobile number)
-- Change their email address with secure OTP verification
-- Access enhanced error handling and logging
+## ⚙️ Installation
 
-#### Documentation
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd healthcare-backend
+   ```
 
-- [Implementation Report](./IMPLEMENTATION_REPORT.md) - Overview of changes and implementation details
-- [Implementation Details](./IMPLEMENTATION_DETAILS.md) - Technical implementation specifics
-- [Testing Guide](./TESTING.md) - How to test the profile features
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Getting Started
+3. **Environment Setup**
+   Create a `.env` file in the root directory:
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/healthcare_db"
+   JWT_SECRET="your-super-secret-jwt-key"
+   EMAIL_USER="your-email@gmail.com"
+   EMAIL_PASS="your-app-password"
+   PORT=3000
+   ```
 
-### Prerequisites
+4. **Database Setup**
+   ```bash
+   # Generate Prisma client
+   npm run db:generate
+   
+   # Push schema to database
+   npm run db:push
+   ```
 
-- Node.js v18 or higher
-- PostgreSQL v14 or higher
+5. **Start the server**
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Production mode
+   npm start
+   ```
 
-### Environment Setup
+## 📁 Project Structure
 
-1. Clone this repository
-2. Create a `.env` file based on `.env.new`
-3. Update the database connection string in `.env`
-
-```bash
-# Example .env file
-DATABASE_URL=postgresql://username:password@localhost:5432/flexease_db?schema=public
-JWT_SECRET=your_secret_key_here
+```
+healthcare-backend/
+├── src/
+│   ├── controllers/     # Route controllers
+│   ├── middlewares/     # Custom middlewares
+│   ├── routes/         # API routes
+│   ├── services/       # Business logic
+│   ├── utils/          # Utility functions
+│   ├── config/         # Configuration files
+│   ├── app.js          # Express app setup
+│   └── server.js       # Server entry point
+├── prisma/
+│   └── schema.prisma   # Database schema
+├── uploads/            # File uploads directory
+├── docs/              # API documentation
+├── scripts/           # Utility scripts
+└── package.json       # Project dependencies
 ```
 
-### Installation
-
-```bash
-# Install dependencies
-npm install
-
-# Run migrations
-npm run migrate
-
-# Seed the database (optional)
-npm run seed
-
-# Start the development server
-npm run dev
-```
-
-## API Documentation
-
-The API provides the following endpoints:
+## 🔗 API Endpoints
 
 ### Authentication
-
-- `POST /api/auth/check-email` - Check if email exists and send OTP
-- `POST /api/auth/verify-email` - Verify OTP for email
-- `POST /api/auth/select-account` - Select account and get JWT token
-- `POST /api/auth/send-otp` - Send OTP for verification
-- `POST /api/auth/verify-otp` - Verify OTP and get JWT token
-- `POST /api/auth/logout` - Logout and invalidate session
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/verify-otp` - OTP verification
 
 ### Patients
+- `GET /api/patients/profile` - Get patient profile
+- `PUT /api/patients/profile` - Update patient profile
+- `POST /api/patients/appointments` - Book appointment
+- `GET /api/patients/appointments` - Get patient appointments
 
-- `POST /api/patients/register-verified` - Register a new patient after email verification
-- `POST /api/patients` - Create a new patient profile
-- `GET /api/patients` - Get all patients
-- `GET /api/patients/:id` - Get patient by ID
-- `PUT /api/patients/:id` - Update patient profile
-- `DELETE /api/patients/:id` - Delete patient profile
-
-### Appointments
-
-- `POST /api/appointments` - Create a new appointment
-- `GET /api/appointments` - Get appointments (with filtering)
-- `GET /api/appointments/:id` - Get appointment by ID
-- `PUT /api/appointments/:id` - Update appointment status
-- `DELETE /api/appointments/:id` - Cancel appointment
-
-### Time Slots
-
-- `POST /api/slots` - Create time slots
-- `GET /api/slots` - Get available time slots
-- `GET /api/slots/:id` - Get time slot by ID
-- `PUT /api/slots/:id` - Update time slot
-- `DELETE /api/slots/:id` - Delete time slot
+### Admins
+- `GET /api/admin/availability` - Get admin availability
+- `POST /api/admin/availability` - Set availability
+- `GET /api/admin/appointments` - Get admin appointments
+- `GET /api/admin/reports` - Get patient reports
 
 ### Reports
+- `POST /api/reports/upload` - Upload medical report
+- `GET /api/reports` - Get reports
+- `POST /api/reports/feedback` - Add feedback to report
 
-- `POST /api/reports` - Upload a new report
-- `GET /api/reports` - Get reports (with filtering)
-- `GET /api/reports/:id` - Get report by ID
-- `PUT /api/reports/:id` - Update report
-- `DELETE /api/reports/:id` - Delete report
+## 🗄️ Database Schema
 
-### Feedback
+The system uses a properly structured PostgreSQL database with:
 
-- `POST /api/feedback` - Add feedback to a report
-- `GET /api/feedback` - Get feedback (by report or admin)
-- `GET /api/feedback/:id` - Get feedback by ID
-- `PUT /api/feedback/:id` - Update feedback
-- `DELETE /api/feedback/:id` - Delete feedback
+- **Users**: Central authentication table
+- **Patient Profiles**: Patient-specific information
+- **Admin Profiles**: Healthcare provider information
+- **Time Slots**: Available appointment slots
+- **Appointments**: Booking records
+- **Reports**: Medical report storage
+- **Feedback**: Admin feedback on reports
+- **Sessions**: User session management
+- **OTPs**: One-time password verification
 
-## Development
+## 🔒 Security Features
 
-### Database Schema
+- JWT-based authentication
+- Password hashing with bcryptjs
+- OTP verification for secure access
+- Role-based access control
+- Input validation and sanitization
+- Secure file upload handling
 
-The database schema is managed using Prisma ORM. To make changes:
+## 🚀 Deployment
 
-1. Update the schema in `prisma/schema.prisma`
-2. Run migrations: `npm run migrate`
+1. **Environment Variables**: Set up production environment variables
+2. **Database**: Configure production PostgreSQL database
+3. **Build**: No build step required for Node.js
+4. **Start**: Use `npm start` for production
 
-### Code Structure
+## 📚 API Documentation
 
+Detailed API documentation is available in the `/docs` folder:
+- [Admin Availability API](./docs/SIMPLIFIED_AVAILABILITY_API.md)
+- [Frontend-Friendly Slots API](./docs/FRONTEND_FRIENDLY_SLOTS_API.md)
+
+## 🧪 Testing
+
+```bash
+# Run tests (when implemented)
+npm test
 ```
-src/
-├── app.js               # Express app configuration
-├── server.js            # Server entry point
-├── config/              # Configuration
-├── auth/                # Authentication logic
-├── controllers/         # Request handlers
-├── middlewares/         # Express middlewares
-├── routes/              # API routes
-├── services/            # Business logic
-├── users/               # User management
-└── utils/               # Utility functions
-```
 
-## License
+## 🤝 Contributing
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions, please contact the development team.
+
+---
+
+**Built with ❤️ for better healthcare management**

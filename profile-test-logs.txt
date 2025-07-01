@@ -1,6 +1,0 @@
-Profile Edit Test Started at 2025-05-13T21:25:44.947Z
-[2025-05-13T21:25:44.948Z] === TESTING PROFILE EDITING ===
-[2025-05-13T21:25:44.951Z] 
-1. Register Test Patient
-[2025-05-13T21:25:44.951Z] Checking email: test.patient1747171544951@example.com
-[2025-05-13T21:25:44.952Z] ❌ Check email failed: apiRequest is not defined

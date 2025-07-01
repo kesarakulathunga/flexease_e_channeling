@@ -8,6 +8,7 @@ const {
   verifyEmailOtp,
   selectAccount
 } = require('./authController');
+const { getLatestOtpForEmail } = require('./devOtpController');
 const { authenticateJWT } = require('../middlewares/authMiddleware');
 
 // health inside the router
@@ -24,5 +25,8 @@ router.post('/select-account', selectAccount);
 router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
 router.post('/logout', authenticateJWT, logout);
+
+// Development only endpoint for retrieving OTPs
+router.get('/dev/latest-otp', getLatestOtpForEmail);
 
 module.exports = router;

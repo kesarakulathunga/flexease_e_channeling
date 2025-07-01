@@ -1,27 +1,38 @@
 {
-  "name": "backend",
+  "name": "healthcare-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Healthcare System Backend API with Node.js, Express, and Prisma",
+  "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "migrate": "prisma migrate dev",
     "seed": "node prisma/seed.js",
-    "studio": "node run-studio.js"
+    "studio": "node run-studio.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma db push --force-reset"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": ["healthcare", "nodejs", "express", "prisma", "postgresql", "api"],
+  "author": "Healthcare Team",
+  "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "@sendgrid/mail": "^8.1.5",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^7.0.3"
   },
   "devDependencies": {
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
+    "form-data": "^4.0.2",
     "fs": "^0.0.1-security",
     "nodemon": "^3.1.10",
     "prisma": "^6.7.0"
