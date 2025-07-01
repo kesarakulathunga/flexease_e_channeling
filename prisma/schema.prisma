@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int                 @id @default(autoincrement())
+  email          String              @unique
+  role           String
+  availabilities AdminAvailability[]
+}
+
+model PatientProfile {
+  id           Int      @id @default(autoincrement())
+  email        String
+  fullName     String
+  age          Int
+  nicNumber    String?
+  createdAt    DateTime @default(now())
+  mobileNumber String?
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@unique([email, fullName])
+}
+
+model AdminProfile {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  fullName  String?
+  phone     String?
+  specialty String?
+}
+
+model OTP {
+  id        Int        @id @default(autoincrement())
+  email     String
+  code      String
+  context   OTPContext
+  patientId Int?
+  expiresAt DateTime
+  used      Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  purpose   String     @default("registration")
+}
+
+model TimeSlot {
+  id             Int                 @id @default(autoincrement())
+  createdAt      DateTime            @default(now())
+  date           DateTime
+  endTime        DateTime
+  isLocked       Boolean             @default(false)
+  startTime      DateTime
+  updatedAt      DateTime            @default(now()) @updatedAt
+  availabilities AdminAvailability[]
+  appointment    Appointment?
+
+  @@unique([date, startTime])
+}
+
+model AdminAvailability {
+  id         Int      @id @default(autoincrement())
+  adminId    Int
+  admin      User     @relation(fields: [adminId], references: [id])
+  timeSlotId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  timeSlot   TimeSlot @relation(fields: [timeSlotId], references: [id])
+
+  @@unique([adminId, timeSlotId])
+}
+
+enum PaymentMethod {
+  PAY_NOW
+  PAY_LATER
+}
+
+model Appointment {
+  id            Int           @id @default(autoincrement())
+  patientId     Int
+  timeSlotId    Int           @unique
+  status        String        @default("PENDING")
+  bookedAt      DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
+  timeSlot      TimeSlot      @relation(fields: [timeSlotId], references: [id])
+  paymentMethod PaymentMethod?
+}
+
+model Report {
+  id         Int        @id @default(autoincrement())
+  patientId  Int
+  title      String
+  notes      String?
+  fileUrl    String
+  uploadedAt DateTime   @default(now())
+  filePath   String?
+  Feedback   Feedback[]
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  adminId   Int
+  message   String
+  createdAt DateTime @default(now())
+  Report    Report   @relation(fields: [reportId], references: [id])
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Appointment_Backup {
+  id         Int?
+  patientId  Int?
+  timeSlotId Int?
+  status     String?
+  bookedAt   DateTime?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TimeSlot_Backup {
+  id          Int?
+  adminId     Int?
+  slotDate    DateTime?
+  slotTime    DateTime?
+  isAvailable Boolean?
+
+  @@ignore
+}
+
+enum OTPContext {
+  LOGIN
+  EMAIL_CHANGE
+}
